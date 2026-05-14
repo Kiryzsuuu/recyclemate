@@ -61,7 +61,13 @@ class _UploadScreenState extends State<UploadScreen> {
           children: [
             // Upload photo area
             GestureDetector(
-              onTap: () {},
+              onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Fitur upload foto akan segera tersedia'),
+                  backgroundColor: Color(0xFF2E7D32),
+                  duration: Duration(seconds: 2),
+                ),
+              ),
               child: Container(
                 width: double.infinity,
                 height: 160,

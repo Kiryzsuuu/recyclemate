@@ -26,6 +26,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   void _toggleFavorite() => setState(() => _isFavorite = !_isFavorite);
 
+  Map<String, dynamic> _popResult() => {
+        'id': widget.product['id'],
+        'isFavorite': _isFavorite,
+      };
+
   void _beli() {
     final onAddToCart = widget.product['onAddToCart'] as VoidCallback?;
     onAddToCart?.call();
@@ -51,8 +56,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF2E7D32)),
             onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
+              Navigator.pop(context); // tutup dialog
+              Navigator.pop(context, _popResult()); // kembali ke home dengan result
             },
             child: const Text('Ke Keranjang',
                 style: TextStyle(color: Colors.white)),
@@ -146,33 +151,36 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final p = widget.product;
-    return Scaffold(
-      backgroundColor: const Color(0xFFF1F8E9),
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 280,
-            pinned: true,
-            backgroundColor: const Color(0xFF2E7D32),
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.pop(context),
-            ),
-            flexibleSpace: FlexibleSpaceBar(
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  ProductIllustration(
-                    iconType: p['iconType'] as String,
-                    bgColor: p['bgColor'] as int,
-                    size: 280,
-                  ),
-                  // Favorite button di atas ilustrasi
-                  Positioned(
-                    top: 80,
-                    right: 16,
-                    child: GestureDetector(
-                      onTap: _toggleFavorite,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) Navigator.pop(context, _popResult());
+      },
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF1F8E9),
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 280,
+              pinned: true,
+              backgroundColor: const Color(0xFF2E7D32),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Navigator.pop(context, _popResult()),
+              ),
+              flexibleSpace: FlexibleSpaceBar(
+                background: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    ProductIllustration(
+                      iconType: p['iconType'] as String,
+                      bgColor: p['bgColor'] as int,
+                      size: 280,
+                    ),
+                    // Favorite button — hanya IconButton, tanpa GestureDetector luar
+                    Positioned(
+                      top: 80,
+                      right: 16,
                       child: Container(
                         decoration: const BoxDecoration(
                             color: Colors.white, shape: BoxShape.circle),
@@ -187,189 +195,189 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    bottom: 16,
-                    left: 16,
-                    child: CategoryChip(
-                        label: p['material'] as String, isSelected: true),
-                  ),
-                ],
+                    Positioned(
+                      bottom: 16,
+                      left: 16,
+                      child: CategoryChip(
+                          label: p['material'] as String, isSelected: true),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(p['name'] as String,
-                      style: const TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.star, color: Colors.amber, size: 18),
-                          const SizedBox(width: 4),
-                          Text('${p['rating']}',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w600)),
-                          const Text(' (42 ulasan)',
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 13)),
-                        ],
-                      ),
-                      Text(
-                        'Rp ${_fmt(p['price'] as int)}',
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(p['name'] as String,
                         style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF2E7D32)),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  // Qty selector
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
+                            fontSize: 24, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Jumlah',
-                            style: TextStyle(fontWeight: FontWeight.w500)),
                         Row(
                           children: [
-                            IconButton(
-                              onPressed: _qty > 1
-                                  ? () => setState(() => _qty--)
-                                  : null,
-                              icon: const Icon(Icons.remove_circle_outline),
-                              color: const Color(0xFF2E7D32),
-                            ),
-                            Text('$_qty',
-                                style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
-                            IconButton(
-                              onPressed: () => setState(() => _qty++),
-                              icon: const Icon(Icons.add_circle_outline),
-                              color: const Color(0xFF2E7D32),
-                            ),
+                            const Icon(Icons.star, color: Colors.amber, size: 18),
+                            const SizedBox(width: 4),
+                            Text('${p['rating']}',
+                                style:
+                                    const TextStyle(fontWeight: FontWeight.w600)),
+                            const Text(' (42 ulasan)',
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 13)),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const SectionTitle(title: 'Tentang Produk'),
-                  const SizedBox(height: 8),
-                  Text(p['description'] as String,
-                      style:
-                          const TextStyle(color: Colors.black87, height: 1.6)),
-                  const SizedBox(height: 20),
-                  const SectionTitle(title: 'Material Digunakan'),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      CategoryChip(
-                          label: p['material'] as String, isSelected: true),
-                      const SizedBox(width: 8),
-                      const CategoryChip(
-                          label: 'Daur Ulang', isSelected: false),
-                      const SizedBox(width: 8),
-                      const CategoryChip(label: 'Handmade', isSelected: false),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  const SectionTitle(title: 'Profil Pengrajin'),
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.05),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2))
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 28,
-                          backgroundColor: const Color(0xFF2E7D32),
-                          child: Text(
-                            (p['crafter'] as String)[0],
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold),
-                          ),
+                        Text(
+                          'Rp ${_fmt(p['price'] as int)}',
+                          style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF2E7D32)),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    // Qty selector
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Jumlah',
+                              style: TextStyle(fontWeight: FontWeight.w500)),
+                          Row(
                             children: [
-                              Text(p['crafter'] as String,
+                              IconButton(
+                                onPressed: _qty > 1
+                                    ? () => setState(() => _qty--)
+                                    : null,
+                                icon: const Icon(Icons.remove_circle_outline),
+                                color: const Color(0xFF2E7D32),
+                              ),
+                              Text('$_qty',
                                   style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16)),
-                              Row(
-                                children: [
-                                  const Icon(Icons.location_on,
-                                      size: 14, color: Colors.grey),
-                                  const SizedBox(width: 2),
-                                  Text(p['crafterCity'] as String,
-                                      style: const TextStyle(
-                                          color: Colors.grey, fontSize: 13)),
-                                ],
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
+                              IconButton(
+                                onPressed: () => setState(() => _qty++),
+                                icon: const Icon(Icons.add_circle_outline),
+                                color: const Color(0xFF2E7D32),
                               ),
                             ],
                           ),
-                        ),
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: const FaIcon(FontAwesomeIcons.instagram,
-                                  size: 18, color: Color(0xFFE1306C)),
-                              onPressed: _hubungiPengrajin,
-                            ),
-                            IconButton(
-                              icon: const FaIcon(FontAwesomeIcons.whatsapp,
-                                  size: 18, color: Color(0xFF25D366)),
-                              onPressed: _hubungiPengrajin,
-                            ),
-                          ],
-                        ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const SectionTitle(title: 'Tentang Produk'),
+                    const SizedBox(height: 8),
+                    Text(p['description'] as String,
+                        style:
+                            const TextStyle(color: Colors.black87, height: 1.6)),
+                    const SizedBox(height: 20),
+                    const SectionTitle(title: 'Material Digunakan'),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        CategoryChip(
+                            label: p['material'] as String, isSelected: true),
+                        const SizedBox(width: 8),
+                        const CategoryChip(
+                            label: 'Daur Ulang', isSelected: false),
+                        const SizedBox(width: 8),
+                        const CategoryChip(label: 'Handmade', isSelected: false),
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 32),
-                  CustomButton(label: 'Beli Sekarang', onPressed: _beli),
-                  const SizedBox(height: 12),
-                  CustomButton(
-                    label: 'Hubungi Pengrajin',
-                    onPressed: _hubungiPengrajin,
-                    isOutlined: true,
-                  ),
-                  const SizedBox(height: 24),
-                ],
+                    const SizedBox(height: 20),
+                    const SectionTitle(title: 'Profil Pengrajin'),
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.05),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2))
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 28,
+                            backgroundColor: const Color(0xFF2E7D32),
+                            child: Text(
+                              (p['crafter'] as String)[0],
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(p['crafter'] as String,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16)),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.location_on,
+                                        size: 14, color: Colors.grey),
+                                    const SizedBox(width: 2),
+                                    Text(p['crafterCity'] as String,
+                                        style: const TextStyle(
+                                            color: Colors.grey, fontSize: 13)),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: const FaIcon(FontAwesomeIcons.instagram,
+                                    size: 18, color: Color(0xFFE1306C)),
+                                onPressed: _hubungiPengrajin,
+                              ),
+                              IconButton(
+                                icon: const FaIcon(FontAwesomeIcons.whatsapp,
+                                    size: 18, color: Color(0xFF25D366)),
+                                onPressed: _hubungiPengrajin,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    CustomButton(label: 'Beli Sekarang', onPressed: _beli),
+                    const SizedBox(height: 12),
+                    CustomButton(
+                      label: 'Hubungi Pengrajin',
+                      onPressed: _hubungiPengrajin,
+                      isOutlined: true,
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

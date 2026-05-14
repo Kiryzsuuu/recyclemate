@@ -130,16 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _favorites.contains(id) ? _favorites.remove(id) : _favorites.add(id);
       });
 
-  void _addToCart() {
-    setState(() => _cartCount++);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Produk ditambahkan ke keranjang!'),
-        backgroundColor: Color(0xFF2E7D32),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
+  void _addToCart() => setState(() => _cartCount++);
 
   @override
   Widget build(BuildContext context) {
@@ -302,15 +293,29 @@ class _HomeScreenState extends State<HomeScreen> {
                           isFavorite: _favorites.contains(p['id']),
                           onFavoriteToggle: () =>
                               _toggleFavorite(p['id'] as String),
-                          onTap: () => Navigator.pushNamed(
-                            context,
-                            '/detail',
-                            arguments: {
-                              ...p,
-                              'isFavorite': _favorites.contains(p['id']),
-                              'onAddToCart': _addToCart,
-                            },
-                          ),
+                          onTap: () async {
+                            final result = await Navigator.pushNamed(
+                              context,
+                              '/detail',
+                              arguments: {
+                                ...p,
+                                'isFavorite': _favorites.contains(p['id']),
+                                'onAddToCart': _addToCart,
+                              },
+                            );
+                            if (!mounted) return;
+                            if (result is Map) {
+                              final id = result['id'] as String?;
+                              final fav = result['isFavorite'] as bool?;
+                              if (id != null && fav != null) {
+                                setState(() {
+                                  fav
+                                      ? _favorites.add(id)
+                                      : _favorites.remove(id);
+                                });
+                              }
+                            }
+                          },
                         );
                       },
                       childCount: filtered.length,
