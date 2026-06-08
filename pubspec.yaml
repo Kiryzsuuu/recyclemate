@@ -12,6 +12,14 @@ dependencies:
     sdk: flutter
   google_fonts: ^6.1.0
   font_awesome_flutter: ^10.6.0
+  http: ^1.2.1         # untuk EmailJS (notifikasi email)
+  image_picker: ^1.1.2
+  cached_network_image: ^3.3.1
+  intl: ^0.19.0
+  firebase_core: ^4.10.0
+  firebase_auth: ^6.5.2
+  cloud_firestore: ^6.5.0
+  firebase_storage: ^13.4.2  # untuk upload foto produk
 
 dev_dependencies:
   flutter_test:
