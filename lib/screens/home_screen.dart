@@ -271,6 +271,88 @@ class _HomeScreenState extends State<HomeScreen> {
                                 .toList(),
                           ),
                         ),
+                        if (!_isLoggedIn) ...[
+                          const SizedBox(height: 16),
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                  color: const Color(0xFF2E7D32), width: 1.5),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.account_circle_outlined,
+                                    size: 36, color: Color(0xFF2E7D32)),
+                                const SizedBox(width: 12),
+                                const Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Masuk untuk mulai belanja',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14)),
+                                      Text('Atau daftar akun baru gratis',
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 12)),
+                                    ],
+                                  ),
+                                ),
+                                Column(
+                                  children: [
+                                    SizedBox(
+                                      width: 80,
+                                      height: 34,
+                                      child: ElevatedButton(
+                                        onPressed: () => Navigator.pushNamed(
+                                                context, '/login')
+                                            .then((_) => _loadUserProfile()),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              const Color(0xFF2E7D32),
+                                          padding: EdgeInsets.zero,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8)),
+                                        ),
+                                        child: const Text('Masuk',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 13)),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    SizedBox(
+                                      width: 80,
+                                      height: 34,
+                                      child: OutlinedButton(
+                                        onPressed: () => Navigator.pushNamed(
+                                                context, '/register')
+                                            .then((_) => _loadUserProfile()),
+                                        style: OutlinedButton.styleFrom(
+                                          side: const BorderSide(
+                                              color: Color(0xFF2E7D32)),
+                                          padding: EdgeInsets.zero,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8)),
+                                        ),
+                                        child: const Text('Daftar',
+                                            style: TextStyle(
+                                                color: Color(0xFF2E7D32),
+                                                fontSize: 13)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: 16),
                         SectionTitle(
                             title: loading
@@ -383,13 +465,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildFab() {
     if (!_isLoggedIn) {
-      return FloatingActionButton.extended(
-        onPressed: () =>
-            Navigator.pushNamed(context, '/login').then((_) => _loadUserProfile()),
-        backgroundColor: const Color(0xFF2E7D32),
-        icon: const Icon(Icons.login, color: Colors.white),
-        label: const Text('Masuk', style: TextStyle(color: Colors.white)),
-      );
+      return const SizedBox.shrink(); // banner di atas sudah cukup
     }
 
     if (_isSeller) {
@@ -401,11 +477,13 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
+    // pembeli — tawarkan buka toko
     return FloatingActionButton.extended(
-      onPressed: () => Navigator.pushNamed(context, '/upload'),
+      onPressed: () =>
+          Navigator.pushNamed(context, '/open-store').then((_) => _loadUserProfile()),
       backgroundColor: const Color(0xFF2E7D32),
-      icon: const Icon(Icons.add_photo_alternate, color: Colors.white),
-      label: const Text('Donasi Barang', style: TextStyle(color: Colors.white)),
+      icon: const Icon(Icons.store_mall_directory, color: Colors.white),
+      label: const Text('Buka Toko', style: TextStyle(color: Colors.white)),
     );
   }
 

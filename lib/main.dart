@@ -12,6 +12,7 @@ import 'screens/register_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/manage_products_screen.dart';
 import 'screens/admin_screen.dart';
+import 'screens/open_store_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -122,6 +123,7 @@ class RecycleMateApp extends StatelessWidget {
         '/profile': (context) => const ProfileScreen(),
         '/manage-products': (context) => const ManageProductsScreen(),
         '/admin': (context) => const AdminScreen(),
+        '/open-store': (context) => const OpenStoreScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/detail') {

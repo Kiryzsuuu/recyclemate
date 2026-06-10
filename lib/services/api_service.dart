@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/product_model.dart';
 import '../models/order_model.dart';
 import '../models/donation_model.dart';
+import '../models/store_model.dart';
 
 class FirestoreService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -173,9 +174,10 @@ class FirestoreService {
     final snapshot = await _db
         .collection('orders')
         .where('buyerId', isEqualTo: _uid)
-        .orderBy('createdAt', descending: true)
         .get();
-    return snapshot.docs.map((d) => OrderModel.fromFirestore(d)).toList();
+    final orders = snapshot.docs.map((d) => OrderModel.fromFirestore(d)).toList();
+    orders.sort((a, b) => (b.createdAt ?? DateTime(0)).compareTo(a.createdAt ?? DateTime(0)));
+    return orders;
   }
 
   /// Get orders for current crafter's products
@@ -184,9 +186,10 @@ class FirestoreService {
     final snapshot = await _db
         .collection('orders')
         .where('crafterId', isEqualTo: _uid)
-        .orderBy('createdAt', descending: true)
         .get();
-    return snapshot.docs.map((d) => OrderModel.fromFirestore(d)).toList();
+    final orders = snapshot.docs.map((d) => OrderModel.fromFirestore(d)).toList();
+    orders.sort((a, b) => (b.createdAt ?? DateTime(0)).compareTo(a.createdAt ?? DateTime(0)));
+    return orders;
   }
 
   /// Update order status
@@ -260,9 +263,10 @@ class FirestoreService {
     final snapshot = await _db
         .collection('donations')
         .where('donorId', isEqualTo: _uid)
-        .orderBy('createdAt', descending: true)
         .get();
-    return snapshot.docs.map((d) => DonationModel.fromFirestore(d)).toList();
+    final donations = snapshot.docs.map((d) => DonationModel.fromFirestore(d)).toList();
+    donations.sort((a, b) => (b.createdAt ?? DateTime(0)).compareTo(a.createdAt ?? DateTime(0)));
+    return donations;
   }
 
   /// Cancel a donation
@@ -455,5 +459,109 @@ class FirestoreService {
       'orders': futures[2].count ?? 0,
       'donations': futures[3].count ?? 0,
     };
+  }
+
+  // ─── STORES ──────────────────────────────────────────────────────────────
+
+  /// Buka toko baru — buat dokumen store + upgrade role user
+  static Future<StoreModel> openStore({
+    required String storeName,
+    required String storeType,
+    required String description,
+    required String city,
+    required String phone,
+    String logoUrl = '',
+  }) async {
+    final user = _auth.currentUser;
+    if (user == null) throw Exception('Belum login.');
+
+    // Cek apakah sudah punya toko
+    final existing = await _db
+        .collection('stores')
+        .where('ownerId', isEqualTo: user.uid)
+        .where('isActive', isEqualTo: true)
+        .limit(1)
+        .get();
+    if (existing.docs.isNotEmpty) {
+      throw Exception('Kamu sudah memiliki toko aktif.');
+    }
+
+    final userDoc = await _db.collection('users').doc(user.uid).get();
+    final userData = userDoc.data() ?? {};
+
+    final store = StoreModel(
+      id: '',
+      ownerId: user.uid,
+      ownerName: userData['name'] ?? user.displayName ?? '',
+      ownerEmail: user.email ?? '',
+      storeName: storeName,
+      storeType: storeType,
+      description: description,
+      city: city,
+      phone: phone,
+      logoUrl: logoUrl,
+    );
+
+    final batch = _db.batch();
+
+    // Buat dokumen store
+    final storeRef = _db.collection('stores').doc();
+    batch.set(storeRef, store.toFirestore());
+
+    // Upgrade role user
+    final userRef = _db.collection('users').doc(user.uid);
+    batch.update(userRef, {
+      'role': storeType,
+      'storeId': storeRef.id,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+
+    await batch.commit();
+
+    final storeDoc = await storeRef.get();
+    return StoreModel.fromFirestore(storeDoc);
+  }
+
+  /// Ambil toko milik user saat ini
+  static Future<StoreModel?> getMyStore() async {
+    if (_uid == null) return null;
+    final snap = await _db
+        .collection('stores')
+        .where('ownerId', isEqualTo: _uid)
+        .where('isActive', isEqualTo: true)
+        .limit(1)
+        .get();
+    if (snap.docs.isEmpty) return null;
+    return StoreModel.fromFirestore(snap.docs.first);
+  }
+
+  /// Update detail toko
+  static Future<void> updateStore(String storeId, Map<String, dynamic> data) async {
+    if (_uid == null) throw Exception('Belum login.');
+    await _db.collection('stores').doc(storeId).update({
+      ...data,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  /// Tutup toko (soft delete)
+  static Future<void> closeStore(String storeId) async {
+    if (_uid == null) throw Exception('Belum login.');
+    final batch = _db.batch();
+    batch.update(_db.collection('stores').doc(storeId), {'isActive': false});
+    batch.update(_db.collection('users').doc(_uid!), {
+      'role': 'pembeli',
+      'storeId': FieldValue.delete(),
+    });
+    await batch.commit();
+  }
+
+  /// Ambil semua toko (untuk admin)
+  static Future<List<StoreModel>> getAllStores() async {
+    final snap = await _db
+        .collection('stores')
+        .orderBy('createdAt', descending: true)
+        .get();
+    return snap.docs.map((d) => StoreModel.fromFirestore(d)).toList();
   }
 }

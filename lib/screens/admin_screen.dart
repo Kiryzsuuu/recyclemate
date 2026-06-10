@@ -132,7 +132,7 @@ class _DashboardTabState extends State<_DashboardTab> {
             physics: const NeverScrollableScrollPhysics(),
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
-            childAspectRatio: 1.6,
+            childAspectRatio: 1.5,
             children: [
               _statCard('Pengguna', _stats['users'] ?? 0,
                   Icons.people_outline, Colors.blue),
@@ -181,20 +181,25 @@ class _DashboardTabState extends State<_DashboardTab> {
               offset: const Offset(0, 2))
         ],
       ),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: color, size: 28),
+          Icon(icon, color: color, size: 24),
           const SizedBox(height: 6),
-          Text('$value',
-              style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: color)),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text('$value',
+                style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: color)),
+          ),
           Text(label,
-              style: const TextStyle(color: Colors.grey, fontSize: 12)),
+              style: const TextStyle(color: Colors.grey, fontSize: 11),
+              overflow: TextOverflow.ellipsis),
         ],
       ),
     );

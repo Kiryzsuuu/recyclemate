@@ -337,6 +337,31 @@ class _ProfileScreenState extends State<ProfileScreen>
                   .then((_) => _loadData()),
             ),
           ],
+          if (_user!.isBuyer && !_user!.isAdmin) ...[
+            const SizedBox(height: 10),
+            Container(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                    colors: [Color(0xFF2E7D32), Color(0xFF66BB6A)]),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ListTile(
+                leading: const Icon(Icons.store_mall_directory,
+                    color: Colors.white),
+                title: const Text('Buka Toko',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold)),
+                subtitle: const Text('Mulai berjualan di RecycleMate',
+                    style: TextStyle(color: Colors.white70, fontSize: 12)),
+                trailing: const Icon(Icons.arrow_forward_ios,
+                    color: Colors.white, size: 16),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                onTap: () => Navigator.pushNamed(context, '/open-store')
+                    .then((_) => _loadData()),
+              ),
+            ),
+          ],
         ],
       ),
     );
