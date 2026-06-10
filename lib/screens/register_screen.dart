@@ -19,7 +19,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _phoneController = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
-  String _role = 'buyer';
+  String _role = 'pembeli';
+
+  static const _roles = [
+    {
+      'value': 'pembeli',
+      'label': 'Pembeli',
+      'desc': 'Beli produk upcycle dari pengrajin & distributor',
+      'icon': Icons.shopping_bag_outlined,
+    },
+    {
+      'value': 'penumpul',
+      'label': 'Penumpul Barang',
+      'desc': 'Kumpulkan & jual sampah ke pengepul',
+      'icon': Icons.recycling_outlined,
+    },
+    {
+      'value': 'pengepul',
+      'label': 'Pengepul',
+      'desc': 'Beli sampah dari penumpul, olah & jual ke pengrajin',
+      'icon': Icons.inventory_2_outlined,
+    },
+    {
+      'value': 'pengrajin',
+      'label': 'Pengrajin',
+      'desc': 'Buat produk upcycle & jual ke pembeli / distributor',
+      'icon': Icons.handyman_outlined,
+    },
+    {
+      'value': 'distributor',
+      'label': 'Distributor',
+      'desc': 'Distribusikan produk pengrajin ke pasar yang lebih luas',
+      'icon': Icons.local_shipping_outlined,
+    },
+  ];
 
   @override
   void dispose() {
@@ -44,7 +77,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         role: _role,
       );
 
-      // Send welcome email (non-blocking)
       EmailService.sendWelcome(
         toName: user.name,
         toEmail: user.email,
@@ -78,7 +110,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         child: Column(
           children: [
             Text(
@@ -93,9 +125,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               'Bergabung dengan komunitas upcycle',
               style: GoogleFonts.poppins(color: Colors.white70),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             Container(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
@@ -117,7 +149,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       decoration: _inputDecoration('Nama Lengkap', Icons.person_outline),
                       validator: (v) => v == null || v.isEmpty ? 'Nama wajib diisi' : null,
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -128,7 +160,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                     TextFormField(
                       controller: _passwordController,
                       obscureText: _obscurePassword,
@@ -148,12 +180,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                     TextFormField(
                       controller: _cityController,
                       decoration: _inputDecoration('Kota', Icons.location_city_outlined),
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                     TextFormField(
                       controller: _phoneController,
                       keyboardType: TextInputType.phone,
@@ -161,21 +193,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Kamu sebagai:',
+                      'Peranmu di RecycleMate:',
                       style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                         color: const Color(0xFF424242),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(child: _roleOption('buyer', 'Pembeli', Icons.shopping_bag_outlined)),
-                        const SizedBox(width: 12),
-                        Expanded(child: _roleOption('crafter', 'Pengrajin', Icons.handyman_outlined)),
-                      ],
-                    ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 10),
+                    ..._roles.map((r) => _roleOption(
+                          r['value'] as String,
+                          r['label'] as String,
+                          r['desc'] as String,
+                          r['icon'] as IconData,
+                        )),
+                    const SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,
                       height: 52,
@@ -199,7 +230,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 14),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -228,12 +259,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _roleOption(String value, String label, IconData icon) {
+  Widget _roleOption(String value, String label, String desc, IconData icon) {
     final selected = _role == value;
     return GestureDetector(
       onTap: () => setState(() => _role = value),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
         decoration: BoxDecoration(
           color: selected ? const Color(0xFFE8F5E9) : const Color(0xFFF5F5F5),
           borderRadius: BorderRadius.circular(10),
@@ -243,19 +276,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon,
-                size: 18,
+                size: 22,
                 color: selected ? const Color(0xFF2E7D32) : Colors.grey),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: TextStyle(
-                color: selected ? const Color(0xFF2E7D32) : Colors.grey,
-                fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: selected ? const Color(0xFF2E7D32) : Colors.black87,
+                      fontWeight: selected ? FontWeight.bold : FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                  ),
+                  Text(
+                    desc,
+                    style: TextStyle(
+                      color: selected ? const Color(0xFF4CAF50) : Colors.grey,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
               ),
             ),
+            if (selected)
+              const Icon(Icons.check_circle, color: Color(0xFF2E7D32), size: 20),
           ],
         ),
       ),

@@ -279,7 +279,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                _user!.role == 'crafter' ? '🛠️ Pengrajin' : '🛍️ Pembeli',
+                '${_user!.roleEmoji} ${_user!.roleLabel}',
                 style: const TextStyle(
                     color: Color(0xFF2E7D32), fontWeight: FontWeight.w500),
               ),
@@ -320,17 +320,23 @@ class _ProfileScreenState extends State<ProfileScreen>
             ),
           ],
           const SizedBox(height: 24),
-          if (_user!.role == 'crafter')
-            ListTile(
-              tileColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              leading: const Icon(Icons.store, color: Color(0xFF2E7D32)),
-              title: const Text('Kelola Produk Saya'),
-              trailing: const Icon(Icons.chevron_right),
+          if (_user!.isAdmin)
+            _actionTile(
+              icon: Icons.admin_panel_settings,
+              label: 'Panel Admin',
+              color: Colors.red,
+              onTap: () => Navigator.pushNamed(context, '/admin'),
+            ),
+          if (_user!.isSeller) ...[
+            const SizedBox(height: 10),
+            _actionTile(
+              icon: Icons.store,
+              label: 'Kelola Produk Saya',
+              color: const Color(0xFF2E7D32),
               onTap: () => Navigator.pushNamed(context, '/manage-products')
                   .then((_) => _loadData()),
             ),
+          ],
         ],
       ),
     );
@@ -589,6 +595,23 @@ class _ProfileScreenState extends State<ProfileScreen>
           borderSide: const BorderSide(color: Color(0xFF2E7D32)),
         ),
       ),
+    );
+  }
+
+  Widget _actionTile({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      tileColor: Colors.white,
+      shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      leading: Icon(icon, color: color),
+      title: Text(label),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: onTap,
     );
   }
 

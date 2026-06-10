@@ -17,7 +17,7 @@ class UserModel {
     required this.email,
     this.city = '',
     this.phone = '',
-    this.role = 'buyer',
+    this.role = 'pembeli',
     this.avatar = '',
     this.bio = '',
     this.createdAt,
@@ -30,14 +30,12 @@ class UserModel {
       email: data['email'] ?? '',
       city: data['city'] ?? '',
       phone: data['phone'] ?? '',
-      role: data['role'] ?? 'buyer',
+      role: data['role'] ?? 'pembeli',
       avatar: data['avatar'] ?? '',
       bio: data['bio'] ?? '',
       createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
     );
   }
-
-
 
   Map<String, dynamic> toFirestore() => {
         'name': name,
@@ -48,4 +46,39 @@ class UserModel {
         'avatar': avatar,
         'bio': bio,
       };
+
+  // ─── Role helpers ─────────────────────────────────────────────────────────
+
+  String get roleLabel {
+    switch (role) {
+      case 'admin':       return 'Admin';
+      case 'penumpul':    return 'Penumpul Barang';
+      case 'pengepul':    return 'Pengepul';
+      case 'pengrajin':
+      case 'crafter':     return 'Pengrajin'; // backward compat
+      case 'distributor': return 'Distributor';
+      case 'pembeli':
+      case 'buyer':       return 'Pembeli'; // backward compat
+      default:            return 'Pembeli';
+    }
+  }
+
+  String get roleEmoji {
+    switch (role) {
+      case 'admin':       return '⚙️';
+      case 'penumpul':    return '♻️';
+      case 'pengepul':    return '📦';
+      case 'pengrajin':
+      case 'crafter':     return '🛠️';
+      case 'distributor': return '🚚';
+      default:            return '🛍️';
+    }
+  }
+
+  bool get isAdmin => role == 'admin';
+
+  // Roles that can list items for sale
+  bool get isSeller => ['penumpul', 'pengepul', 'pengrajin', 'crafter', 'distributor'].contains(role);
+
+  bool get isBuyer => ['pembeli', 'buyer'].contains(role);
 }

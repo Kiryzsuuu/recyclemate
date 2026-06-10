@@ -16,6 +16,8 @@ class ProductModel {
   final String imageUrl;
   final int stock;
   final bool isActive;
+  final String sellerRole;  // 'penumpul' | 'pengepul' | 'pengrajin' | 'distributor'
+  final String productType; // 'waste' | 'material' | 'handcraft' | 'retail'
   final DateTime? createdAt;
 
   ProductModel({
@@ -34,6 +36,8 @@ class ProductModel {
     this.imageUrl = '',
     this.stock = 1,
     this.isActive = true,
+    this.sellerRole = 'pengrajin',
+    this.productType = 'handcraft',
     this.createdAt,
   });
 
@@ -55,6 +59,8 @@ class ProductModel {
       imageUrl: data['imageUrl'] ?? '',
       stock: (data['stock'] ?? 0).toInt(),
       isActive: data['isActive'] ?? true,
+      sellerRole: data['sellerRole'] ?? 'pengrajin',
+      productType: data['productType'] ?? 'handcraft',
       createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
     );
   }
@@ -74,6 +80,8 @@ class ProductModel {
         'crafterName': crafterName,
         'crafterCity': crafterCity,
         'crafterId': crafterId,
+        'sellerRole': sellerRole,
+        'productType': productType,
         'createdAt': FieldValue.serverTimestamp(),
       };
 
@@ -91,5 +99,27 @@ class ProductModel {
         'imageUrl': imageUrl,
         'stock': stock,
         'productId': id,
+        'sellerRole': sellerRole,
+        'productType': productType,
       };
+
+  String get productTypeLabel {
+    switch (productType) {
+      case 'waste':     return 'Sampah / Limbah';
+      case 'material':  return 'Bahan Baku';
+      case 'retail':    return 'Produk Retail';
+      default:          return 'Produk Kerajinan';
+    }
+  }
+
+  String get sellerRoleLabel {
+    switch (sellerRole) {
+      case 'penumpul':    return 'Penumpul';
+      case 'pengepul':    return 'Pengepul';
+      case 'distributor': return 'Distributor';
+      case 'crafter':
+      case 'pengrajin':   return 'Pengrajin';
+      default:            return sellerRole;
+    }
+  }
 }

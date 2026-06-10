@@ -278,4 +278,182 @@ class FirestoreService {
         .doc(id)
         .update({'status': 'cancelled'});
   }
+
+  // ─── ROLE-BASED PRODUCT QUERY ─────────────────────────────────────────────
+
+  /// Get products visible to a specific role (supply chain filter)
+  static Stream<List<ProductModel>> getProductsStreamForRole(String? userRole) {
+    return _db
+        .collection('products')
+        .where('isActive', isEqualTo: true)
+        .snapshots()
+        .map((snap) {
+      var all = snap.docs.map((d) => ProductModel.fromFirestore(d)).toList();
+
+      // Sort by createdAt client-side (avoids composite index requirement)
+      all.sort((a, b) {
+        final at = a.createdAt ?? DateTime(0);
+        final bt = b.createdAt ?? DateTime(0);
+        return bt.compareTo(at);
+      });
+
+      // Role-based visibility filter
+      switch (userRole) {
+        case 'admin':
+          return all; // admin sees everything
+        case 'pengepul':
+          return all
+              .where((p) =>
+                  p.productType == 'waste' ||
+                  ['handcraft', 'retail'].contains(p.productType))
+              .toList();
+        case 'pengrajin':
+        case 'crafter':
+          return all
+              .where((p) =>
+                  p.productType == 'material' ||
+                  ['handcraft', 'retail'].contains(p.productType))
+              .toList();
+        case 'distributor':
+          return all
+              .where((p) => ['handcraft', 'retail'].contains(p.productType))
+              .toList();
+        default: // pembeli, penumpul, buyer, guest
+          return all
+              .where((p) => ['handcraft', 'retail'].contains(p.productType))
+              .toList();
+      }
+    });
+  }
+
+  // ─── ADMIN: USERS ────────────────────────────────────────────────────────
+
+  /// Get all users (admin only)
+  static Future<List<Map<String, dynamic>>> getAllUsers() async {
+    final snap = await _db.collection('users').get();
+    return snap.docs.map((d) => {'id': d.id, ...d.data()}).toList();
+  }
+
+  /// Update a user's role (admin only)
+  static Future<void> updateUserRole(String userId, String role) async {
+    await _db.collection('users').doc(userId).update({'role': role});
+  }
+
+  /// Deactivate a user (admin only)
+  static Future<void> setUserDeactivated(String userId, bool deactivated) async {
+    await _db
+        .collection('users')
+        .doc(userId)
+        .update({'isDeactivated': deactivated});
+  }
+
+  // ─── ADMIN: PRODUCTS ─────────────────────────────────────────────────────
+
+  /// Get ALL products including inactive (admin only)
+  static Future<List<ProductModel>> getAllProductsAdmin() async {
+    final snap = await _db
+        .collection('products')
+        .orderBy('createdAt', descending: true)
+        .get();
+    return snap.docs.map((d) => ProductModel.fromFirestore(d)).toList();
+  }
+
+  /// Toggle product active status (admin or owner)
+  static Future<void> setProductActive(String id, bool isActive) async {
+    await _db.collection('products').doc(id).update({'isActive': isActive});
+  }
+
+  /// Hard delete a product (admin only)
+  static Future<void> adminDeleteProduct(String id) async {
+    await _db.collection('products').doc(id).delete();
+  }
+
+  // ─── ADMIN: ORDERS ────────────────────────────────────────────────────────
+
+  /// Get ALL orders (admin only)
+  static Future<List<OrderModel>> getAllOrders() async {
+    final snap = await _db
+        .collection('orders')
+        .orderBy('createdAt', descending: true)
+        .get();
+    return snap.docs.map((d) => OrderModel.fromFirestore(d)).toList();
+  }
+
+  /// Admin update order status (no ownership check)
+  static Future<void> adminUpdateOrderStatus(String id, String status) async {
+    await _db.collection('orders').doc(id).update({
+      'status': status,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+
+    if (status == 'cancelled') {
+      final orderDoc = await _db.collection('orders').doc(id).get();
+      final order = OrderModel.fromFirestore(orderDoc);
+      await _db.collection('products').doc(order.productId).update({
+        'stock': FieldValue.increment(order.quantity),
+      });
+    }
+  }
+
+  // ─── ADMIN: DONATIONS ────────────────────────────────────────────────────
+
+  /// Get ALL donations (admin only)
+  static Future<List<DonationModel>> getAllDonations() async {
+    final snap = await _db
+        .collection('donations')
+        .orderBy('createdAt', descending: true)
+        .get();
+    return snap.docs.map((d) => DonationModel.fromFirestore(d)).toList();
+  }
+
+  /// Admin update donation status
+  static Future<void> adminUpdateDonationStatus(String id, String status) async {
+    await _db
+        .collection('donations')
+        .doc(id)
+        .update({'status': status, 'updatedAt': FieldValue.serverTimestamp()});
+  }
+
+  // ─── SITE SETTINGS ───────────────────────────────────────────────────────
+
+  /// Get site settings (visible to all)
+  static Future<Map<String, dynamic>> getSiteSettings() async {
+    final doc =
+        await _db.collection('app_config').doc('site_settings').get();
+    return doc.data() ?? {
+      'bannerTitle': 'Temukan karya upcycle terbaik hari ini',
+      'bannerSubtitle': 'Bersama kurangi sampah, ciptakan karya bernilai',
+      'statText': '120 kg sampah terselamatkan',
+      'promoText': '',
+      'maintenanceMode': false,
+      'allowNewRegistrations': true,
+    };
+  }
+
+  /// Update site settings (admin only)
+  static Future<void> updateSiteSettings(Map<String, dynamic> settings) async {
+    await _db.collection('app_config').doc('site_settings').set(
+      {...settings, 'updatedAt': FieldValue.serverTimestamp()},
+      SetOptions(merge: true),
+    );
+  }
+
+  // ─── ADMIN: STATS ────────────────────────────────────────────────────────
+
+  /// Get dashboard stats (admin only)
+  static Future<Map<String, int>> getAdminStats() async {
+    final futures = await Future.wait([
+      _db.collection('users').count().get(),
+      _db.collection('products').where('isActive', isEqualTo: true).count().get(),
+      _db.collection('orders').count().get(),
+      _db.collection('donations').count().get(),
+    ]);
+
+    return {
+      'users': futures[0].count ?? 0,
+      'products': futures[1].count ?? 0,
+      'orders': futures[2].count ?? 0,
+      'donations': futures[3].count ?? 0,
+    };
+  }
 }

@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import '../services/api_service.dart';
 import '../services/auth_service.dart';
-import '../services/email_service.dart';
+import '../services/api_service.dart';
 import '../services/storage_service.dart';
+import '../services/email_service.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/category_chip.dart';
 import '../widgets/section_title.dart';
@@ -22,14 +22,49 @@ class _UploadScreenState extends State<UploadScreen> {
 
   int _quantity = 1;
   String _selectedMaterial = 'Plastik';
-  bool _isSubmitting = false;
   bool _isSubmitted = false;
-  String _submittedName = '';
-
-  File? _selectedImage;
-  bool _isUploadingImage = false;
+  bool _isLoading = false;
+  File? _pickedImage;
 
   static const _materials = ['Plastik', 'Kayu', 'Kaca', 'Kain', 'Logam', 'Lainnya'];
+
+  @override
+  void initState() {
+    super.initState();
+    // Redirect to login if not authenticated
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!FirebaseAuthService.isLoggedIn) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => AlertDialog(
+            title: const Text('Perlu Login'),
+            content: const Text(
+                'Kamu harus login untuk mendonasikan barang.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: const Text('Batal'),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2E7D32)),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pushReplacementNamed(context, '/login');
+                },
+                child: const Text('Login',
+                    style: TextStyle(color: Colors.white)),
+              ),
+            ],
+          ),
+        );
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -38,134 +73,29 @@ class _UploadScreenState extends State<UploadScreen> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (_) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Pilih Foto',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: _imageSourceButton(
-                    icon: Icons.photo_library_outlined,
-                    label: 'Galeri',
-                    onTap: () async {
-                      Navigator.pop(context);
-                      final file = await StorageService.pickFromGallery();
-                      if (file != null && mounted) {
-                        setState(() => _selectedImage = file);
-                      }
-                    },
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _imageSourceButton(
-                    icon: Icons.camera_alt_outlined,
-                    label: 'Kamera',
-                    onTap: () async {
-                      Navigator.pop(context);
-                      final file = await StorageService.pickFromCamera();
-                      if (file != null && mounted) {
-                        setState(() => _selectedImage = file);
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _imageSourceButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF1F8E9),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFF2E7D32).withValues(alpha: 0.3)),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, size: 36, color: const Color(0xFF2E7D32)),
-            const SizedBox(height: 8),
-            Text(label, style: const TextStyle(color: Color(0xFF2E7D32))),
-          ],
-        ),
-      ),
-    );
+  Future<void> _pickImage(ImageSourceType source) async {
+    final file = source == ImageSourceType.gallery
+        ? await StorageService.pickFromGallery()
+        : await StorageService.pickFromCamera();
+    if (file != null) setState(() => _pickedImage = file);
   }
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-
     if (!FirebaseAuthService.isLoggedIn) {
-      if (mounted) {
-        showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: const Text('Perlu Login'),
-            content: const Text('Kamu harus login untuk mengirim donasi.'),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Batal')),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2E7D32)),
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/login');
-                },
-                child: const Text('Login', style: TextStyle(color: Colors.white)),
-              ),
-            ],
-          ),
-        );
-      }
+      Navigator.pushNamed(context, '/login');
       return;
     }
 
-    setState(() => _isSubmitting = true);
+    setState(() => _isLoading = true);
     try {
-      // Upload foto jika ada
+      // Upload image if selected
       String imageUrl = '';
-      if (_selectedImage != null) {
-        setState(() => _isUploadingImage = true);
-        imageUrl = await StorageService.uploadDonationImage(_selectedImage!);
-        setState(() => _isUploadingImage = false);
+      if (_pickedImage != null) {
+        imageUrl = await StorageService.uploadDonationImage(_pickedImage!);
       }
 
+      // Submit to Firestore
       final donation = await FirestoreService.createDonation(
         itemName: _nameController.text.trim(),
         description: _descController.text.trim(),
@@ -174,7 +104,7 @@ class _UploadScreenState extends State<UploadScreen> {
         imageUrl: imageUrl,
       );
 
-      // Send donation email (non-blocking)
+      // Send confirmation email (non-blocking)
       EmailService.sendDonationConfirmation(
         donorName: donation.donorName,
         donorEmail: donation.donorEmail,
@@ -183,10 +113,7 @@ class _UploadScreenState extends State<UploadScreen> {
         quantity: donation.quantity,
       );
 
-      setState(() {
-        _submittedName = _nameController.text.trim();
-        _isSubmitted = true;
-      });
+      if (mounted) setState(() => _isSubmitted = true);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -197,10 +124,7 @@ class _UploadScreenState extends State<UploadScreen> {
         );
       }
     } finally {
-      if (mounted) setState(() {
-        _isSubmitting = false;
-        _isUploadingImage = false;
-      });
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -229,27 +153,26 @@ class _UploadScreenState extends State<UploadScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ─── Photo Picker ────────────────────────────────────────────
+            // Photo picker area
             GestureDetector(
-              onTap: _pickImage,
+              onTap: _showImageSourceSheet,
               child: Container(
                 width: double.infinity,
-                height: 180,
+                height: 160,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: const Color(0xFF2E7D32),
-                    width: _selectedImage != null ? 2 : 1,
-                  ),
+                      color: const Color(0xFF2E7D32),
+                      style: BorderStyle.solid),
                 ),
-                child: _selectedImage != null
+                child: _pickedImage != null
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(15),
                         child: Stack(
                           fit: StackFit.expand,
                           children: [
-                            Image.file(_selectedImage!, fit: BoxFit.cover),
+                            Image.file(_pickedImage!, fit: BoxFit.cover),
                             Positioned(
                               bottom: 8,
                               right: 8,
@@ -257,19 +180,11 @@ class _UploadScreenState extends State<UploadScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: Colors.black54,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.edit, color: Colors.white, size: 14),
-                                    SizedBox(width: 4),
-                                    Text('Ganti foto',
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 12)),
-                                  ],
-                                ),
+                                    color: Colors.black54,
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: const Text('Ganti Foto',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 12)),
                               ),
                             ),
                           ],
@@ -281,37 +196,35 @@ class _UploadScreenState extends State<UploadScreen> {
                           Icon(Icons.add_photo_alternate_outlined,
                               size: 48, color: Color(0xFF2E7D32)),
                           SizedBox(height: 8),
-                          Text('Tap untuk upload foto barang',
-                              style: TextStyle(
-                                  color: Color(0xFF2E7D32),
-                                  fontWeight: FontWeight.w500)),
-                          SizedBox(height: 4),
-                          Text('JPG, PNG max 5MB',
-                              style: TextStyle(color: Colors.grey, fontSize: 12)),
+                          Text('Tap untuk upload foto',
+                              style: TextStyle(color: Color(0xFF2E7D32))),
+                          Text('JPG, PNG max 5MB (opsional)',
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 12)),
                         ],
                       ),
               ),
             ),
             const SizedBox(height: 24),
-
-            // ─── Form Fields ─────────────────────────────────────────────
             const SectionTitle(title: 'Informasi Barang'),
             const SizedBox(height: 12),
             TextFormField(
               controller: _nameController,
-              decoration: _inputDecoration('Nama Barang', 'Contoh: Botol kaca bekas'),
-              validator: (v) => v!.isEmpty ? 'Nama barang wajib diisi' : null,
+              decoration: _inputDecoration(
+                  'Nama Barang', 'Contoh: Botol kaca bekas'),
+              validator: (v) =>
+                  v == null || v.isEmpty ? 'Nama barang wajib diisi' : null,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _descController,
               maxLines: 3,
-              decoration: _inputDecoration('Deskripsi', 'Ceritakan kondisi barang...'),
-              validator: (v) => v!.isEmpty ? 'Deskripsi wajib diisi' : null,
+              decoration: _inputDecoration(
+                  'Deskripsi', 'Ceritakan kondisi barang...'),
+              validator: (v) =>
+                  v == null || v.isEmpty ? 'Deskripsi wajib diisi' : null,
             ),
             const SizedBox(height: 20),
-
-            // ─── Material ─────────────────────────────────────────────────
             const SectionTitle(title: 'Jenis Material'),
             const SizedBox(height: 12),
             Wrap(
@@ -319,22 +232,30 @@ class _UploadScreenState extends State<UploadScreen> {
               runSpacing: 8,
               children: _materials
                   .map((m) => GestureDetector(
-                        onTap: () => setState(() => _selectedMaterial = m),
+                        onTap: () =>
+                            setState(() => _selectedMaterial = m),
                         child: CategoryChip(
-                            label: m, isSelected: _selectedMaterial == m),
+                          label: m,
+                          isSelected: _selectedMaterial == m,
+                        ),
                       ))
                   .toList(),
             ),
             const SizedBox(height: 24),
-
-            // ─── Quantity ─────────────────────────────────────────────────
             const SectionTitle(title: 'Jumlah Barang'),
             const SizedBox(height: 12),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 8,
+                  ),
+                ],
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -355,9 +276,11 @@ class _UploadScreenState extends State<UploadScreen> {
                       Container(
                         width: 40,
                         alignment: Alignment.center,
-                        child: Text('$_quantity',
-                            style: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold)),
+                        child: Text(
+                          '$_quantity',
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
                       ),
                       IconButton(
                         onPressed: () => setState(() => _quantity++),
@@ -370,17 +293,65 @@ class _UploadScreenState extends State<UploadScreen> {
               ),
             ),
             const SizedBox(height: 32),
-
-            // ─── Submit ───────────────────────────────────────────────────
-            CustomButton(
-              label: _isUploadingImage
-                  ? 'Mengupload foto...'
-                  : _isSubmitting
-                      ? 'Mengirim...'
-                      : 'Kirim Donasi',
-              onPressed: (_isSubmitting || _isUploadingImage) ? () {} : _submit,
-            ),
+            _isLoading
+                ? const Center(
+                    child:
+                        CircularProgressIndicator(color: Color(0xFF2E7D32)))
+                : CustomButton(
+                    label: 'Kirim Donasi', onPressed: _submit),
             const SizedBox(height: 24),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showImageSourceSheet() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      builder: (_) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Pilih Sumber Foto',
+                style:
+                    TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _pickImage(ImageSourceType.gallery);
+                    },
+                    icon: const Icon(Icons.photo_library),
+                    label: const Text('Galeri'),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF2E7D32),
+                        foregroundColor: Colors.white),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _pickImage(ImageSourceType.camera);
+                    },
+                    icon: const Icon(Icons.camera_alt),
+                    label: const Text('Kamera'),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF2E7D32),
+                        foregroundColor: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
           ],
         ),
       ),
@@ -397,30 +368,28 @@ class _UploadScreenState extends State<UploadScreen> {
             const Icon(Icons.check_circle, size: 100, color: Color(0xFF2E7D32)),
             const SizedBox(height: 24),
             const Text('Donasi Berhasil Dikirim!',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                style:
+                    TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             Text(
-              'Terima kasih! $_quantity unit $_submittedName ($_selectedMaterial) '
-              'akan segera dihubungkan ke pengrajin terdekat.\n\n'
-              '📧 Email konfirmasi telah dikirim ke emailmu.',
+              '$_quantity unit ${_nameController.text} ($_selectedMaterial) akan segera '
+              'dihubungkan ke pengrajin terdekat.\n\n'
+              '📧 Konfirmasi dikirim ke emailmu.',
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.grey, height: 1.6),
+              style:
+                  const TextStyle(color: Colors.grey, height: 1.6),
             ),
             const SizedBox(height: 32),
             CustomButton(
               label: 'Kembali ke Beranda',
-              onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
+              onPressed: () =>
+                  Navigator.pushReplacementNamed(context, '/home'),
             ),
             const SizedBox(height: 12),
-            OutlinedButton(
-              onPressed: () => Navigator.pushNamed(context, '/profile'),
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Color(0xFF2E7D32)),
-                minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text('Lihat Donasi Saya',
+            TextButton(
+              onPressed: () =>
+                  Navigator.pushNamed(context, '/profile'),
+              child: const Text('Lihat riwayat donasiku →',
                   style: TextStyle(color: Color(0xFF2E7D32))),
             ),
           ],
@@ -439,6 +408,10 @@ class _UploadScreenState extends State<UploadScreen> {
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,
       ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: Color(0xFF2E7D32)),
@@ -446,3 +419,5 @@ class _UploadScreenState extends State<UploadScreen> {
     );
   }
 }
+
+enum ImageSourceType { gallery, camera }
