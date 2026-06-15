@@ -20,6 +20,15 @@ android {
         jvmTarget = JavaVersion.VERSION_17
     }
 
+    signingConfigs {
+        release {
+            keyAlias "recyclemate"
+            keyPassword "opet123"
+            storeFile file("recyclemate-release.jks")
+            storePassword "opet123"
+        }
+    }
+
     defaultConfig {
         applicationId "com.recyclemate.recyclemate"
         minSdk flutter.minSdkVersion
@@ -30,7 +39,7 @@ android {
 
     buildTypes {
         release {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'product_illustration.dart';
+import 'app_image.dart';
 
 class ProductCard extends StatelessWidget {
   final Map<String, dynamic> product;
@@ -40,11 +41,17 @@ class ProductCard extends StatelessWidget {
                 ClipRRect(
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(16)),
-                  child: ProductIllustration(
-                    iconType: product['iconType'] as String,
-                    bgColor: product['bgColor'] as int,
-                    size: 130,
-                  ),
+                  child: (product['imageUrl'] as String? ?? '').isNotEmpty
+                      ? AppImage(
+                          src: product['imageUrl'] as String,
+                          width: double.infinity,
+                          height: 130,
+                        )
+                      : ProductIllustration(
+                          iconType: product['iconType'] as String,
+                          bgColor: product['bgColor'] as int,
+                          size: 130,
+                        ),
                 ),
                 Positioned(
                   top: 8,

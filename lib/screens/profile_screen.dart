@@ -7,6 +7,7 @@ import '../models/user_model.dart';
 import '../models/order_model.dart';
 import '../models/donation_model.dart';
 import 'dart:io';
+import 'dart:convert';
 import '../models/store_model.dart';
 import '../services/storage_service.dart';
 import 'edit_store_screen.dart';
@@ -24,6 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   UserModel? _user;
   StoreModel? _store;
   List<OrderModel> _orders = [];
+  List<OrderModel> _incomingOrders = [];
   List<DonationModel> _donations = [];
   bool _isLoading = true;
 
@@ -62,14 +64,24 @@ class _ProfileScreenState extends State<ProfileScreen>
         FirestoreService.getMyDonations(),
       ]);
       StoreModel? store;
+      List<OrderModel> incoming = [];
       if (user != null && user.isSeller) {
-        store = await FirestoreService.getMyStore();
+        final storeResult = await FirestoreService.getMyStore();
+        store = storeResult;
+        try {
+          incoming = await FirestoreService.getOrdersAsCrafter();
+        } catch (_) {}
       }
+      final tabCount = (user?.isSeller ?? false) ? 4 : 3;
+      final newTabController = TabController(length: tabCount, vsync: this);
       setState(() {
         _user = user;
         _store = store;
         _orders = results[0] as List<OrderModel>;
         _donations = results[1] as List<DonationModel>;
+        _incomingOrders = incoming;
+        _tabController.dispose();
+        _tabController = newTabController;
         _nameCtrl = TextEditingController(text: user?.name ?? '');
         _cityCtrl = TextEditingController(text: user?.city ?? '');
         _phoneCtrl = TextEditingController(text: user?.phone ?? '');
@@ -146,7 +158,19 @@ class _ProfileScreenState extends State<ProfileScreen>
     try {
       String? avatarUrl;
       if (_avatarFile != null) {
-        avatarUrl = await StorageService.uploadAvatar(_avatarFile!);
+        try {
+          avatarUrl = await StorageService.uploadAvatar(_avatarFile!);
+        } catch (_) {
+          // Upload foto gagal (Storage belum aktif / koneksi) — tetap simpan data profil
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Foto gagal diupload, data profil tetap disimpan.'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
+        }
       }
       final updated = await FirebaseAuthService.updateProfile({
         'name': _nameCtrl.text.trim(),
@@ -300,10 +324,11 @@ class _ProfileScreenState extends State<ProfileScreen>
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white60,
           indicatorColor: Colors.white,
-          tabs: const [
-            Tab(text: 'Profil'),
-            Tab(text: 'Pesanan'),
-            Tab(text: 'Donasi'),
+          tabs: [
+            const Tab(text: 'Profil'),
+            const Tab(text: 'Pesanan'),
+            const Tab(text: 'Donasi'),
+            if (_user?.isSeller ?? false) const Tab(text: 'Pesanan Masuk'),
           ],
         ),
       ),
@@ -316,6 +341,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 _buildProfileTab(),
                 _buildOrdersTab(),
                 _buildDonationsTab(),
+                if (_user?.isSeller ?? false) _buildIncomingOrdersTab(),
               ],
             ),
     );
@@ -336,9 +362,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   backgroundColor: const Color(0xFF2E7D32),
                   backgroundImage: _avatarFile != null
                       ? FileImage(_avatarFile!) as ImageProvider
-                      : (_user!.avatar.isNotEmpty
-                          ? NetworkImage(_user!.avatar)
-                          : null),
+                      : _buildAvatarProvider(_user!.avatar),
                   child: (_avatarFile == null && _user!.avatar.isEmpty)
                       ? Text(
                           _user!.name.isNotEmpty
@@ -694,6 +718,144 @@ class _ProfileScreenState extends State<ProfileScreen>
     }
   }
 
+  Widget _buildIncomingOrdersTab() {
+    if (_incomingOrders.isEmpty) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.inbox_outlined, size: 64, color: Colors.grey),
+            SizedBox(height: 12),
+            Text('Belum ada pesanan masuk', style: TextStyle(color: Colors.grey)),
+          ],
+        ),
+      );
+    }
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: _incomingOrders.length,
+      itemBuilder: (_, i) => _incomingOrderCard(_incomingOrders[i]),
+    );
+  }
+
+  Widget _incomingOrderCard(OrderModel order) {
+    final statusColors = {
+      'pending': Colors.orange,
+      'paid': Colors.blue,
+      'shipped': Colors.indigo,
+      'completed': Colors.green,
+      'cancelled': Colors.red,
+      'refund_requested': Colors.deepOrange,
+      'refunded': Colors.teal,
+    };
+    final color = statusColors[order.status] ?? Colors.grey;
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(order.productName,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 15)),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(order.statusLabel,
+                      style: TextStyle(
+                          color: color, fontSize: 12, fontWeight: FontWeight.w600)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Text('Pembeli: ${order.buyerName}',
+                style: const TextStyle(color: Colors.grey, fontSize: 13)),
+            Text('${order.quantity} unit × ${_fmt(order.productPrice)}',
+                style: const TextStyle(color: Colors.grey, fontSize: 13)),
+            const Divider(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Total: ${_fmt(order.totalPrice)}',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2E7D32),
+                        fontSize: 15)),
+                if (order.status == 'paid')
+                  ElevatedButton(
+                    onPressed: () => _updateOrderStatus(order.id, 'shipped'),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.indigo,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                    child: const Text('Tandai Dikirim',
+                        style: TextStyle(color: Colors.white, fontSize: 12)),
+                  ),
+                if (order.status == 'shipped')
+                  ElevatedButton(
+                    onPressed: () => _updateOrderStatus(order.id, 'completed'),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                    child: const Text('Tandai Selesai',
+                        style: TextStyle(color: Colors.white, fontSize: 12)),
+                  ),
+                if (order.status == 'refund_requested')
+                  ElevatedButton(
+                    onPressed: () => _updateOrderStatus(order.id, 'refunded'),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                    child: const Text('Setujui Refund',
+                        style: TextStyle(color: Colors.white, fontSize: 12)),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _updateOrderStatus(String orderId, String newStatus) async {
+    try {
+      await FirestoreService.updateOrderStatus(orderId, newStatus);
+      _loadData();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Status pesanan diperbarui'),
+            backgroundColor: Color(0xFF2E7D32),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(e.toString().replaceAll('Exception: ', '')),
+              backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
   Widget _infoCard(List<Widget> children) {
     if (children.isEmpty) return const SizedBox.shrink();
     return Container(
@@ -757,6 +919,18 @@ class _ProfileScreenState extends State<ProfileScreen>
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
     );
+  }
+
+  ImageProvider? _buildAvatarProvider(String avatar) {
+    if (avatar.isEmpty) return null;
+    if (avatar.startsWith('data:image')) {
+      try {
+        return MemoryImage(base64Decode(avatar.split(',').last));
+      } catch (_) {
+        return null;
+      }
+    }
+    return NetworkImage(avatar);
   }
 
   String _fmt(int price) => 'Rp ${price.toString().replaceAllMapped(

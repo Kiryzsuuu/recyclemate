@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/store_model.dart';
@@ -214,11 +215,8 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
                         backgroundColor:
                             const Color(0xFF2E7D32).withValues(alpha: 0.12),
                         backgroundImage: _logoFile != null
-                            ? FileImage(_logoFile!)
-                            : (widget.store.logoUrl.isNotEmpty
-                                ? NetworkImage(widget.store.logoUrl)
-                                    as ImageProvider
-                                : null),
+                            ? FileImage(_logoFile!) as ImageProvider
+                            : _buildLogoProvider(widget.store.logoUrl),
                         child: (_logoFile == null &&
                                 widget.store.logoUrl.isEmpty)
                             ? Text(storeEmoji,
@@ -291,6 +289,18 @@ class _EditStoreScreenState extends State<EditStoreScreen> {
         ),
       ),
     );
+  }
+
+  ImageProvider? _buildLogoProvider(String logoUrl) {
+    if (logoUrl.isEmpty) return null;
+    if (logoUrl.startsWith('data:image')) {
+      try {
+        return MemoryImage(base64Decode(logoUrl.split(',').last));
+      } catch (_) {
+        return null;
+      }
+    }
+    return NetworkImage(logoUrl);
   }
 
   Widget _field(

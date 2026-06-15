@@ -389,7 +389,7 @@ class _UploadScreenState extends State<UploadScreen> {
             TextButton(
               onPressed: () =>
                   Navigator.pushNamed(context, '/profile'),
-              child: const Text('Lihat riwayat donasiku →',
+              child: const Text('Lihat riwayat donasiku',
                   style: TextStyle(color: Color(0xFF2E7D32))),
             ),
           ],

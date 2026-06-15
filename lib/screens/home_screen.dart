@@ -537,7 +537,7 @@ class _HomeScreenState extends State<HomeScreen> {
         content: _cartCount == 0
             ? const Text('Keranjang masih kosong.')
             : Text(
-                '$_cartCount produk di keranjang.\nLihat detail pesanan di Profil → Pesanan.'),
+                '$_cartCount produk di keranjang.\nLihat detail pesanan di Profil - Pesanan.'),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context),

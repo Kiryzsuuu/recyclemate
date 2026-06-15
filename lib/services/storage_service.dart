@@ -1,99 +1,55 @@
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 
 class StorageService {
-  static final FirebaseStorage _storage = FirebaseStorage.instance;
-  static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final ImagePicker _picker = ImagePicker();
 
-  // ─── PICK IMAGE ────────────────────────────────────────────────────────────
-
-  /// Pick image from gallery
+  // Pick image from gallery
   static Future<File?> pickFromGallery() async {
     final picked = await _picker.pickImage(
       source: ImageSource.gallery,
-      maxWidth: 1080,
-      maxHeight: 1080,
-      imageQuality: 85,
+      maxWidth: 800,
+      maxHeight: 800,
+      imageQuality: 70,
     );
     if (picked == null) return null;
     return File(picked.path);
   }
 
-  /// Pick image from camera
+  // Pick image from camera
   static Future<File?> pickFromCamera() async {
     final picked = await _picker.pickImage(
       source: ImageSource.camera,
-      maxWidth: 1080,
-      maxHeight: 1080,
-      imageQuality: 85,
+      maxWidth: 800,
+      maxHeight: 800,
+      imageQuality: 70,
     );
     if (picked == null) return null;
     return File(picked.path);
   }
 
-  // ─── UPLOAD PRODUCT IMAGE ──────────────────────────────────────────────────
-
-  /// Upload product image — returns download URL
-  static Future<String> uploadProductImage(
-    File imageFile, {
-    String? productId,
-  }) async {
-    final uid = _auth.currentUser?.uid;
-    if (uid == null) throw Exception('Belum login.');
-
-    final fileName =
-        productId ?? DateTime.now().millisecondsSinceEpoch.toString();
-    final ref = _storage.ref('products/$uid/$fileName.jpg');
-
-    final task = await ref.putFile(
-      imageFile,
-      SettableMetadata(contentType: 'image/jpeg'),
-    );
-
-    return await task.ref.getDownloadURL();
+  // Convert file to base64 string
+  static Future<String> toBase64(File file) async {
+    final bytes = await file.readAsBytes();
+    return 'data:image/jpeg;base64,${base64Encode(bytes)}';
   }
 
-  /// Upload donation item image — returns download URL
+  // Upload product image — returns base64 string
+  static Future<String> uploadProductImage(File imageFile, {String? productId}) async {
+    return toBase64(imageFile);
+  }
+
+  // Upload donation image — returns base64 string
   static Future<String> uploadDonationImage(File imageFile) async {
-    final uid = _auth.currentUser?.uid;
-    if (uid == null) throw Exception('Belum login.');
-
-    final fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    final ref = _storage.ref('donations/$uid/$fileName.jpg');
-
-    final task = await ref.putFile(
-      imageFile,
-      SettableMetadata(contentType: 'image/jpeg'),
-    );
-
-    return await task.ref.getDownloadURL();
+    return toBase64(imageFile);
   }
 
-  /// Upload avatar/profile photo — returns download URL
+  // Upload avatar — returns base64 string
   static Future<String> uploadAvatar(File imageFile) async {
-    final uid = _auth.currentUser?.uid;
-    if (uid == null) throw Exception('Belum login.');
-
-    final ref = _storage.ref('avatars/$uid/profile.jpg');
-    final task = await ref.putFile(
-      imageFile,
-      SettableMetadata(contentType: 'image/jpeg'),
-    );
-
-    return await task.ref.getDownloadURL();
+    return toBase64(imageFile);
   }
 
-  /// Delete file from Storage by URL
-  static Future<void> deleteByUrl(String url) async {
-    if (url.isEmpty) return;
-    try {
-      final ref = _storage.refFromURL(url);
-      await ref.delete();
-    } catch (_) {
-      // Ignore if file doesn't exist
-    }
-  }
+  // No-op: base64 tidak perlu dihapus
+  static Future<void> deleteByUrl(String url) async {}
 }

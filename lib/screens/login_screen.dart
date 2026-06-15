@@ -210,7 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: TextButton(
                     onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
                     child: const Text(
-                      'Lihat produk tanpa masuk →',
+                      'Lihat produk tanpa masuk',
                       style: TextStyle(color: Colors.white70),
                     ),
                   ),

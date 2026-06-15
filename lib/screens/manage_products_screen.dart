@@ -5,6 +5,7 @@ import '../services/api_service.dart';
 import '../services/storage_service.dart';
 import '../models/product_model.dart';
 import '../widgets/category_chip.dart';
+import '../widgets/app_image.dart';
 
 class ManageProductsScreen extends StatefulWidget {
   const ManageProductsScreen({super.key});
@@ -532,15 +533,17 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
                           borderRadius: BorderRadius.circular(12)),
                       child: ListTile(
                         contentPadding: const EdgeInsets.all(12),
-                        leading: Container(
-                          width: 56,
-                          height: 56,
-                          decoration: BoxDecoration(
-                            color: Color(p.bgColor),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Icon(Icons.recycling,
-                              color: Colors.white, size: 28),
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: p.imageUrl.isNotEmpty
+                              ? AppImage(src: p.imageUrl, width: 56, height: 56)
+                              : Container(
+                                  width: 56,
+                                  height: 56,
+                                  color: Color(p.bgColor),
+                                  child: const Icon(Icons.recycling,
+                                      color: Colors.white, size: 28),
+                                ),
                         ),
                         title: Text(p.name,
                             style: const TextStyle(fontWeight: FontWeight.bold)),

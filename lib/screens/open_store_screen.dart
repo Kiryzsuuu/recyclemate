@@ -378,7 +378,7 @@ class _OpenStoreScreenState extends State<OpenStoreScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                   ),
-                  child: const Text('Pilih & Lanjutkan →',
+                  child: const Text('Pilih & Lanjutkan',
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
