@@ -13,6 +13,7 @@ import 'screens/profile_screen.dart';
 import 'screens/manage_products_screen.dart';
 import 'screens/admin_screen.dart';
 import 'screens/open_store_screen.dart';
+import 'screens/forgot_password_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,22 +22,23 @@ Future<void> main() async {
   runApp(const RecycleMateApp());
 }
 
+// Admin email dikonfigurasi di sini — ganti sesuai kebutuhan deployment.
+// Jangan commit password ke git; gunakan env var saat production.
+const _kAdminEmail = String.fromEnvironment('ADMIN_EMAIL', defaultValue: 'maskiryz23@gmail.com');
+const _kAdminPassword = String.fromEnvironment('ADMIN_PASSWORD', defaultValue: 'opet123');
+
 /// One-time admin account creation — runs only if flag not set in Firestore.
 Future<void> _ensureAdminAccount() async {
-  const adminEmail = 'maskiryz23@gmail.com';
-  const adminPassword = 'opet123';
-
   try {
     final db = FirebaseFirestore.instance;
     final auth = FirebaseAuth.instance;
 
-    // Check if already set up
     final setupDoc = await db.collection('app_config').doc('setup').get();
     if (setupDoc.data()?['adminCreated'] == true) {
-      // Enforce admin role (in case it was changed accidentally)
+      // Pastikan role admin tidak berubah secara tidak sengaja
       final q = await db
           .collection('users')
-          .where('email', isEqualTo: adminEmail)
+          .where('email', isEqualTo: _kAdminEmail)
           .limit(1)
           .get();
       if (q.docs.isNotEmpty && q.docs.first.data()['role'] != 'admin') {
@@ -45,19 +47,18 @@ Future<void> _ensureAdminAccount() async {
       return;
     }
 
-    // Create or sign in admin
     UserCredential? cred;
     try {
       cred = await auth.createUserWithEmailAndPassword(
-        email: adminEmail,
-        password: adminPassword,
+        email: _kAdminEmail,
+        password: _kAdminPassword,
       );
       await cred.user!.updateDisplayName('Admin RecycleMate');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         cred = await auth.signInWithEmailAndPassword(
-          email: adminEmail,
-          password: adminPassword,
+          email: _kAdminEmail,
+          password: _kAdminPassword,
         );
       } else {
         debugPrint('Admin setup error: ${e.code}');
@@ -65,10 +66,9 @@ Future<void> _ensureAdminAccount() async {
       }
     }
 
-    // Write admin Firestore profile
     await db.collection('users').doc(cred.user!.uid).set({
       'name': 'Admin RecycleMate',
-      'email': adminEmail,
+      'email': _kAdminEmail,
       'role': 'admin',
       'city': 'Jakarta',
       'phone': '',
@@ -77,7 +77,6 @@ Future<void> _ensureAdminAccount() async {
       'createdAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
 
-    // Default site settings
     await db.collection('app_config').doc('site_settings').set({
       'bannerTitle': 'Temukan karya upcycle terbaik hari ini',
       'bannerSubtitle': 'Bersama kurangi sampah, ciptakan karya bernilai',
@@ -87,13 +86,12 @@ Future<void> _ensureAdminAccount() async {
       'allowNewRegistrations': true,
     }, SetOptions(merge: true));
 
-    // Mark done
     await db.collection('app_config').doc('setup').set(
       {'adminCreated': true, 'createdAt': FieldValue.serverTimestamp()},
       SetOptions(merge: true),
     );
 
-    debugPrint('✅ Admin account ready: $adminEmail');
+    debugPrint('Admin account ready: $_kAdminEmail');
     await auth.signOut();
   } catch (e) {
     debugPrint('Admin setup error: $e');
@@ -124,6 +122,7 @@ class RecycleMateApp extends StatelessWidget {
         '/manage-products': (context) => const ManageProductsScreen(),
         '/admin': (context) => const AdminScreen(),
         '/open-store': (context) => const OpenStoreScreen(),
+        '/forgot-password': (context) => const ForgotPasswordScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/detail') {

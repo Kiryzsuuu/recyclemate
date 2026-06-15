@@ -144,7 +144,22 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 28),
+                        const SizedBox(height: 12),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: GestureDetector(
+                            onTap: () => Navigator.pushNamed(context, '/forgot-password'),
+                            child: Text(
+                              'Lupa password?',
+                              style: GoogleFonts.poppins(
+                                color: const Color(0xFF2E7D32),
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
                         SizedBox(
                           width: double.infinity,
                           height: 52,

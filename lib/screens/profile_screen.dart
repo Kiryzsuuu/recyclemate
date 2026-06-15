@@ -6,6 +6,10 @@ import '../services/email_service.dart';
 import '../models/user_model.dart';
 import '../models/order_model.dart';
 import '../models/donation_model.dart';
+import 'dart:io';
+import '../models/store_model.dart';
+import '../services/storage_service.dart';
+import 'edit_store_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -18,10 +22,12 @@ class _ProfileScreenState extends State<ProfileScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   UserModel? _user;
+  StoreModel? _store;
   List<OrderModel> _orders = [];
   List<DonationModel> _donations = [];
   bool _isLoading = true;
 
+  File? _avatarFile;
   bool _isEditing = false;
   late TextEditingController _nameCtrl;
   late TextEditingController _cityCtrl;
@@ -51,12 +57,19 @@ class _ProfileScreenState extends State<ProfileScreen>
     setState(() => _isLoading = true);
     try {
       final user = await FirebaseAuthService.getProfile();
-      final orders = await FirestoreService.getMyOrders();
-      final donations = await FirestoreService.getMyDonations();
+      final results = await Future.wait([
+        FirestoreService.getMyOrders(),
+        FirestoreService.getMyDonations(),
+      ]);
+      StoreModel? store;
+      if (user != null && user.isSeller) {
+        store = await FirestoreService.getMyStore();
+      }
       setState(() {
         _user = user;
-        _orders = orders;
-        _donations = donations;
+        _store = store;
+        _orders = results[0] as List<OrderModel>;
+        _donations = results[1] as List<DonationModel>;
         _nameCtrl = TextEditingController(text: user?.name ?? '');
         _cityCtrl = TextEditingController(text: user?.city ?? '');
         _phoneCtrl = TextEditingController(text: user?.phone ?? '');
@@ -76,13 +89,71 @@ class _ProfileScreenState extends State<ProfileScreen>
     }
   }
 
+  Future<void> _pickAvatar() async {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      builder: (_) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Ganti Foto Profil',
+                style: GoogleFonts.poppins(
+                    fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      final f = await StorageService.pickFromGallery();
+                      if (f != null) setState(() => _avatarFile = f);
+                    },
+                    icon: const Icon(Icons.photo_library),
+                    label: const Text('Galeri'),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF2E7D32),
+                        foregroundColor: Colors.white),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      final f = await StorageService.pickFromCamera();
+                      if (f != null) setState(() => _avatarFile = f);
+                    },
+                    icon: const Icon(Icons.camera_alt),
+                    label: const Text('Kamera'),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF2E7D32),
+                        foregroundColor: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> _saveProfile() async {
     try {
+      String? avatarUrl;
+      if (_avatarFile != null) {
+        avatarUrl = await StorageService.uploadAvatar(_avatarFile!);
+      }
       final updated = await FirebaseAuthService.updateProfile({
         'name': _nameCtrl.text.trim(),
         'city': _cityCtrl.text.trim(),
         'phone': _phoneCtrl.text.trim(),
         'bio': _bioCtrl.text.trim(),
+        if (avatarUrl != null) 'avatar': avatarUrl,
       });
       setState(() {
         _user = updated;
@@ -256,13 +327,45 @@ class _ProfileScreenState extends State<ProfileScreen>
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          CircleAvatar(
-            radius: 48,
-            backgroundColor: const Color(0xFF2E7D32),
-            child: Text(
-              _user!.name.isNotEmpty ? _user!.name[0].toUpperCase() : '?',
-              style: const TextStyle(
-                  fontSize: 36, color: Colors.white, fontWeight: FontWeight.bold),
+          GestureDetector(
+            onTap: _isEditing ? _pickAvatar : null,
+            child: Stack(
+              children: [
+                CircleAvatar(
+                  radius: 48,
+                  backgroundColor: const Color(0xFF2E7D32),
+                  backgroundImage: _avatarFile != null
+                      ? FileImage(_avatarFile!) as ImageProvider
+                      : (_user!.avatar.isNotEmpty
+                          ? NetworkImage(_user!.avatar)
+                          : null),
+                  child: (_avatarFile == null && _user!.avatar.isEmpty)
+                      ? Text(
+                          _user!.name.isNotEmpty
+                              ? _user!.name[0].toUpperCase()
+                              : '?',
+                          style: const TextStyle(
+                              fontSize: 36,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        )
+                      : null,
+                ),
+                if (_isEditing)
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF2E7D32),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.camera_alt,
+                          color: Colors.white, size: 16),
+                    ),
+                  ),
+              ],
             ),
           ),
           const SizedBox(height: 12),
@@ -336,6 +439,22 @@ class _ProfileScreenState extends State<ProfileScreen>
               onTap: () => Navigator.pushNamed(context, '/manage-products')
                   .then((_) => _loadData()),
             ),
+            if (_store != null) ...[
+              const SizedBox(height: 10),
+              _actionTile(
+                icon: Icons.edit_note,
+                label: 'Edit Info Toko',
+                color: Colors.blueGrey,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => EditStoreScreen(store: _store!),
+                  ),
+                ).then((changed) {
+                  if (changed == true) _loadData();
+                }),
+              ),
+            ],
           ],
           if (_user!.isBuyer && !_user!.isAdmin) ...[
             const SizedBox(height: 10),

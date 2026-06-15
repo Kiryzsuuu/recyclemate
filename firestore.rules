@@ -2,50 +2,49 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper: apakah user sudah login?
     function isAuthenticated() {
       return request.auth != null;
     }
 
-    // Helper: apakah ini adalah user yang bersangkutan?
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
-    // ─── USERS ─────────────────────────────────────────────────────────────
-    // User hanya bisa baca dan update profil sendiri
-    match /users/{userId} {
-      allow read: if isOwner(userId);
-      allow create: if isAuthenticated() && request.auth.uid == userId;
-      allow update: if isOwner(userId);
-      allow delete: if false; // tidak boleh hapus akun via client
+    function isAdmin() {
+      return isAuthenticated()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
-    // ─── PRODUCTS ──────────────────────────────────────────────────────────
-    // Semua orang bisa baca produk aktif
-    // Hanya crafter pemilik yang bisa tulis
+    // USERS: baca & update profil sendiri saja
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if false;
+    }
+
+    // PRODUCTS: publik baca, pemilik bisa update
     match /products/{productId} {
-      allow read: if true; // marketplace: bisa dibaca tanpa login
+      allow read: if true;
       allow create: if isAuthenticated()
         && request.resource.data.crafterId == request.auth.uid;
       allow update: if isAuthenticated()
         && (
-          // pemilik produk bisa update
           resource.data.crafterId == request.auth.uid
-          // atau update stock saat order (buyer beli)
-          || request.resource.data.diff(resource.data).affectedKeys()
-               .hasOnly(['stock'])
+          || isAdmin()
+          || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stock'])
         );
-      allow delete: if false; // soft delete via isActive:false
+      allow delete: if false;
     }
 
-    // ─── ORDERS ────────────────────────────────────────────────────────────
-    // Buyer dan crafter bisa baca order masing-masing
+    // ORDERS: buyer & crafter bisa baca & update order mereka
     match /orders/{orderId} {
       allow read: if isAuthenticated()
         && (
           resource.data.buyerId == request.auth.uid
           || resource.data.crafterId == request.auth.uid
+          || isAdmin()
         );
       allow create: if isAuthenticated()
         && request.resource.data.buyerId == request.auth.uid;
@@ -53,21 +52,39 @@ service cloud.firestore {
         && (
           resource.data.buyerId == request.auth.uid
           || resource.data.crafterId == request.auth.uid
+          || isAdmin()
         );
       allow delete: if false;
     }
 
-    // ─── DONATIONS ─────────────────────────────────────────────────────────
-    // Hanya donor yang bisa baca dan kelola donasinya
+    // DONATIONS: hanya donor yang bisa kelola, pending-only update
     match /donations/{donationId} {
       allow read: if isAuthenticated()
-        && resource.data.donorId == request.auth.uid;
+        && (resource.data.donorId == request.auth.uid || isAdmin());
       allow create: if isAuthenticated()
         && request.resource.data.donorId == request.auth.uid;
       allow update: if isAuthenticated()
-        && resource.data.donorId == request.auth.uid
-        && resource.data.status == 'pending'; // hanya bisa batalkan kalau pending
+        && (
+          (resource.data.donorId == request.auth.uid && resource.data.status == 'pending')
+          || isAdmin()
+        );
       allow delete: if false;
+    }
+
+    // STORES: user login bisa baca, pemilik bisa update
+    match /stores/{storeId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated()
+        && request.resource.data.ownerId == request.auth.uid;
+      allow update: if isAuthenticated()
+        && (resource.data.ownerId == request.auth.uid || isAdmin());
+      allow delete: if false;
+    }
+
+    // APP CONFIG: semua user login bisa baca, hanya admin yang bisa tulis
+    match /app_config/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
     }
   }
 }
