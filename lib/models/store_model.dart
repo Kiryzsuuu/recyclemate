@@ -78,14 +78,7 @@ class StoreModel {
     }
   }
 
-  String get storeTypeEmoji {
-    switch (storeType) {
-      case 'penumpul':    return '🗑️';
-      case 'pengepul':    return '♻️';
-      case 'distributor': return '🚚';
-      default:            return '🛠️';
-    }
-  }
+  String get storeTypeEmoji => '';
 
   String get storeTypeColor {
     switch (storeType) {

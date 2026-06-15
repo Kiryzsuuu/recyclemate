@@ -181,8 +181,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   children: [
                                     Text(
                                       _isLoggedIn
-                                          ? 'Halo, ${_userProfile?.name.split(' ')[0] ?? FirebaseAuth.instance.currentUser?.displayName?.split(' ')[0] ?? ''} 👋'
-                                          : 'Halo, Kolektor! 👋',
+                                          ? 'Halo, ${_userProfile?.name.split(' ')[0] ?? FirebaseAuth.instance.currentUser?.displayName?.split(' ')[0] ?? ''}!'
+                                          : 'Halo, Kolektor!',
                                       style: const TextStyle(
                                           color: Colors.white70, fontSize: 13),
                                     ),

@@ -374,7 +374,7 @@ class _UploadScreenState extends State<UploadScreen> {
             Text(
               '$_quantity unit ${_nameController.text} ($_selectedMaterial) akan segera '
               'dihubungkan ke pengrajin terdekat.\n\n'
-              '📧 Konfirmasi dikirim ke emailmu.',
+              'Konfirmasi dikirim ke emailmu.',
               textAlign: TextAlign.center,
               style:
                   const TextStyle(color: Colors.grey, height: 1.6),

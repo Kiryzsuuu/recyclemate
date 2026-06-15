@@ -161,7 +161,7 @@ class _OpenStoreScreenState extends State<OpenStoreScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '${store.storeTypeEmoji} ${store.storeName}',
+                  store.storeName,
                   style: const TextStyle(
                       color: Color(0xFF2E7D32), fontWeight: FontWeight.w500),
                 ),
@@ -257,7 +257,7 @@ class _OpenStoreScreenState extends State<OpenStoreScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('🏪 Buka Toko di RecycleMate',
+                const Text('Buka Toko di RecycleMate',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,

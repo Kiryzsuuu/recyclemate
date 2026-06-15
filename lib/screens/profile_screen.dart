@@ -382,7 +382,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                '${_user!.roleEmoji} ${_user!.roleLabel}',
+                _user!.roleLabel,
                 style: const TextStyle(
                     color: Color(0xFF2E7D32), fontWeight: FontWeight.w500),
               ),

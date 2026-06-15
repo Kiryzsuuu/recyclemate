@@ -149,7 +149,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
             content: const Text(
               'Pesananmu berhasil dibuat!\n\n'
-              '📧 Email konfirmasi telah dikirim ke emailmu.\n\n'
+              'Email konfirmasi telah dikirim ke emailmu.\n\n'
               'Cek tab Pesanan di profil untuk status terbaru.',
             ),
             actions: [

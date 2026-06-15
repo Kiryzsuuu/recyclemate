@@ -116,11 +116,11 @@ class EmailService {
     required String status,
   }) async {
     final statusLabels = {
-      'paid': 'Pembayaran Diterima ✅',
-      'shipped': 'Sedang Dikirim 🚚',
-      'completed': 'Pesanan Selesai 🎉',
-      'cancelled': 'Pesanan Dibatalkan ❌',
-      'refunded': 'Refund Berhasil 💰',
+      'paid': 'Pembayaran Diterima',
+      'shipped': 'Sedang Dikirim',
+      'completed': 'Pesanan Selesai',
+      'cancelled': 'Pesanan Dibatalkan',
+      'refunded': 'Refund Berhasil',
     };
     await _send(_statusTemplateId, {
       'to_name': buyerName,

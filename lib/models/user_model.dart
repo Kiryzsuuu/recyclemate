@@ -63,17 +63,7 @@ class UserModel {
     }
   }
 
-  String get roleEmoji {
-    switch (role) {
-      case 'admin':       return '⚙️';
-      case 'penumpul':    return '♻️';
-      case 'pengepul':    return '📦';
-      case 'pengrajin':
-      case 'crafter':     return '🛠️';
-      case 'distributor': return '🚚';
-      default:            return '🛍️';
-    }
-  }
+  String get roleEmoji => '';
 
   bool get isAdmin => role == 'admin';
 
