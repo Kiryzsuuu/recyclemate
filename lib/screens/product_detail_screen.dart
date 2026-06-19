@@ -4,6 +4,7 @@ import '../widgets/category_chip.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/section_title.dart';
 import '../widgets/product_illustration.dart';
+import '../widgets/app_image.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../services/email_service.dart';
@@ -291,11 +292,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
-                    ProductIllustration(
-                      iconType: p['iconType'] as String? ?? 'generic',
-                      bgColor: p['bgColor'] as int? ?? 0xFF2E7D32,
-                      size: 280,
-                    ),
+                    (p['imageUrl'] as String? ?? '').isNotEmpty
+                        ? AppImage(
+                            src: p['imageUrl'] as String,
+                            width: double.infinity,
+                            height: 280,
+                            fit: BoxFit.cover,
+                          )
+                        : ProductIllustration(
+                            iconType: p['iconType'] as String? ?? 'generic',
+                            bgColor: p['bgColor'] as int? ?? 0xFF2E7D32,
+                            size: 280,
+                          ),
                     Positioned(
                       top: 80,
                       right: 16,

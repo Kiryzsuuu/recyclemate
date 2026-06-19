@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>RecycleMate – Pembagian Tugas Presentasi</title>
+<style>
+  @page {
+    size: A4;
+    margin: 20mm 18mm 20mm 18mm;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 11pt;
+    color: #000;
+    background: white;
+    line-height: 1.5;
+  }
+
+  h1 { font-size: 18pt; margin-bottom: 4px; }
+  h2 { font-size: 14pt; margin-bottom: 6px; border-bottom: 2px solid #000; padding-bottom: 4px; margin-top: 0; }
+  h3 { font-size: 11pt; margin: 10px 0 4px 0; }
+  h4 { font-size: 10.5pt; margin: 8px 0 4px 0; }
+
+  p { margin-bottom: 6px; }
+
+  ul { padding-left: 18px; margin-bottom: 8px; }
+  ul li { margin-bottom: 3px; font-size: 10.5pt; }
+
+  .cover {
+    text-align: center;
+    padding: 60px 0 40px 0;
+    page-break-after: always;
+  }
+  .cover h1 { font-size: 24pt; margin-bottom: 8px; }
+  .cover .subtitle { font-size: 13pt; color: #333; margin-bottom: 40px; }
+  .cover table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    width: 80%;
+  }
+  .cover table td {
+    border: 1px solid #000;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11pt;
+  }
+  .cover table th {
+    border: 1px solid #000;
+    padding: 8px 14px;
+    background: #f0f0f0;
+    font-size: 10pt;
+    font-weight: bold;
+    text-align: left;
+  }
+  .cover-footer {
+    margin-top: 50px;
+    font-size: 10pt;
+    color: #555;
+  }
+
+  .section {
+    page-break-before: always;
+    padding-top: 0;
+  }
+
+  .member-title {
+    font-size: 16pt;
+    font-weight: bold;
+    margin-bottom: 2px;
+  }
+  .member-role {
+    font-size: 11pt;
+    font-style: italic;
+    color: #444;
+    margin-bottom: 14px;
+  }
+
+  table.files {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 14px;
+    font-size: 10pt;
+  }
+  table.files th {
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 6px 8px;
+    text-align: left;
+    font-weight: bold;
+  }
+  table.files td {
+    border: 1px solid #ccc;
+    padding: 6px 8px;
+    vertical-align: top;
+  }
+  table.files td:first-child {
+    font-family: 'Courier New', monospace;
+    font-size: 9.5pt;
+    white-space: nowrap;
+    width: 38%;
+  }
+  table.files td:last-child {
+    width: 12%;
+    text-align: center;
+    color: #444;
+  }
+
+  pre {
+    background: #f7f7f7;
+    border: 1px solid #ccc;
+    border-left: 3px solid #555;
+    padding: 10px 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 8.5pt;
+    line-height: 1.5;
+    white-space: pre;
+    margin-bottom: 12px;
+    page-break-inside: avoid;
+  }
+  .code-label {
+    font-size: 9pt;
+    font-family: 'Courier New', monospace;
+    color: #555;
+    margin-bottom: 3px;
+    margin-top: 8px;
+  }
+
+  .qa-block {
+    margin-bottom: 10px;
+    page-break-inside: avoid;
+  }
+  .qa-q {
+    font-weight: bold;
+    font-size: 10.5pt;
+    margin-bottom: 2px;
+  }
+  .qa-a {
+    font-size: 10.5pt;
+    padding-left: 14px;
+    border-left: 2px solid #ccc;
+    margin-left: 4px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 12px 0;
+  }
+
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10pt;
+    margin-bottom: 16px;
+  }
+  .summary-table th {
+    background: #f0f0f0;
+    border: 1px solid #aaa;
+    padding: 7px 9px;
+    font-weight: bold;
+    text-align: left;
+  }
+  .summary-table td {
+    border: 1px solid #aaa;
+    padding: 7px 9px;
+    vertical-align: top;
+  }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; }
+    pre { page-break-inside: avoid; }
+    .section { page-break-before: always; }
+    .qa-block { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ HALAMAN COVER ═══════════════ -->
+<div class="cover">
+  <h1>RecycleMate</h1>
+  <div class="subtitle">Marketplace Upcycle — Flutter + Firebase<br>Pembagian Tugas Presentasi Kelompok</div>
+
+  <table>
+    <tr>
+      <th>Anggota</th>
+      <th>Bagian</th>
+      <th>Tanggung Jawab</th>
+    </tr>
+    <tr>
+      <td><strong>Anggota 1</strong></td>
+      <td>Arsitektur &amp; Autentikasi</td>
+      <td>main.dart, login, register, splash, auth service, user model</td>
+    </tr>
+    <tr>
+      <td><strong>Anggota 2</strong></td>
+      <td>Home &amp; Katalog Produk</td>
+      <td>home screen, product detail, filter, search, favorit, product model</td>
+    </tr>
+    <tr>
+      <td><strong>Anggota 3</strong></td>
+      <td>Toko &amp; Upload Produk</td>
+      <td>open store, upload produk, manage products, storage service, store model</td>
+    </tr>
+    <tr>
+      <td><strong>Anggota 4</strong></td>
+      <td>Admin Panel &amp; Profil</td>
+      <td>admin screen, profile screen, api service, order model, donation model</td>
+    </tr>
+  </table>
+
+  <div class="cover-footer">
+    <p><strong>Tech Stack:</strong> Flutter · Firebase Auth · Cloud Firestore · Firebase Storage · Google Fonts Poppins</p>
+    <p style="margin-top:6px;"><strong>Pola Arsitektur:</strong> Screens → Services → Models → Widgets</p>
+    <p style="margin-top:6px;">Semua anggota wajib tahu: Flutter adalah framework Google untuk membuat aplikasi Android, iOS, dan Web dari satu kode. Firebase adalah backend dari Google yang menyediakan autentikasi, database (Firestore), dan penyimpanan file (Storage).</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════ ANGGOTA 1 ═══════════════ -->
+<div class="section">
+  <div class="member-title">Anggota 1 — Arsitektur &amp; Autentikasi</div>
+  <div class="member-role">Bagian ini mencakup: fondasi aplikasi, cara app dijalankan pertama kali, sistem login/register, keamanan akun, dan alur autentikasi Firebase.</div>
+
+  <h2>File yang Dikuasai</h2>
+  <table class="files">
+    <tr><th>Nama File</th><th>Penjelasan Singkat</th><th>Baris</th></tr>
+    <tr><td>lib/main.dart</td><td>Entry point aplikasi. Inisialisasi Firebase, daftarkan semua route navigasi, setup akun admin otomatis pertama kali.</td><td>107</td></tr>
+    <tr><td>lib/services/auth_service.dart</td><td>Semua logika autentikasi: register, login, logout, ambil profil user, helper pesan error.</td><td>170</td></tr>
+    <tr><td>lib/services/email_service.dart</td><td>Kirim email konfirmasi pesanan ke pembeli menggunakan layanan EmailJS.</td><td>137</td></tr>
+    <tr><td>lib/screens/login_screen.dart</td><td>Halaman login: form email + password, validasi input, loading state, tampilkan error Firebase.</td><td>242</td></tr>
+    <tr><td>lib/screens/register_screen.dart</td><td>Halaman register: nama, email, password, kota, nomor HP. Buat akun Firebase Auth + simpan ke Firestore.</td><td>330</td></tr>
+    <tr><td>lib/screens/forgot_password_screen.dart</td><td>Halaman lupa password: input email, kirim link reset via Firebase sendPasswordResetEmail().</td><td>288</td></tr>
+    <tr><td>lib/screens/splash_screen.dart</td><td>Layar loading pertama. Cek status login, redirect otomatis ke home (jika sudah login) atau login screen.</td><td>109</td></tr>
+    <tr><td>lib/models/user_model.dart</td><td>Struktur data User: id, name, email, role, city, phone, avatar. Punya getter isAdmin dan isSeller.</td><td>74</td></tr>
+  </table>
+
+  <h2>Fitur yang Dijelaskan</h2>
+  <ul>
+    <li><strong>Splash Screen:</strong> Mengecek <code>FirebaseAuth.instance.currentUser</code>. Jika tidak null (sudah login), langsung redirect ke <code>/home</code>. Jika null, redirect ke <code>/login</code>.</li>
+    <li><strong>Login:</strong> Memvalidasi form, memanggil <code>FirebaseAuthService.login()</code>, menangani error seperti wrong-password dan user-not-found dengan pesan yang ramah.</li>
+    <li><strong>Register:</strong> Membuat akun di Firebase Auth lalu menyimpan data profil ke koleksi Firestore <code>users</code> dengan field role awal 'buyer'.</li>
+    <li><strong>Forgot Password:</strong> Memanggil <code>sendPasswordResetEmail()</code> Firebase — link reset dikirim ke email user.</li>
+    <li><strong>Sistem Role:</strong> Ada 3 role: buyer, seller, admin. Disimpan di field <code>role</code> di Firestore. Model <code>UserModel</code> punya getter <code>isAdmin</code> dan <code>isSeller</code>.</li>
+    <li><strong>Auto Admin Setup:</strong> Fungsi <code>_ensureAdminAccount()</code> di main.dart membuat akun admin sekali saat app pertama dijalankan, memeriksa flag di <code>app_config/setup</code> agar tidak terjadi duplikasi.</li>
+    <li><strong>Named Routes:</strong> Semua navigasi menggunakan <code>Navigator.pushNamed()</code>. Route didaftarkan di <code>MaterialApp.routes</code> di main.dart.</li>
+    <li><strong>Theme App:</strong> Warna utama hijau <code>#2E7D32</code>, font Poppins dari Google Fonts, Material Design 3.</li>
+  </ul>
+
+  <h2>Penjelasan Kode Kunci</h2>
+
+  <div class="code-label">lib/services/auth_service.dart — Fungsi Login</div>
+  <pre>static Future&lt;UserModel&gt; login({
+  required String email,
+  required String password,
+}) async {
+  try {
+    // 1. Kirim email + password ke Firebase Authentication
+    final credential = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    // 2. Setelah berhasil, ambil data profil dari Firestore
+    //    Firebase Auth hanya menyimpan email & uid, bukan nama, kota, dll.
+    final doc = await _db
+        .collection('users')
+        .doc(credential.user!.uid)
+        .get();
+
+    if (!doc.exists) {
+      throw Exception('Data user tidak ditemukan.');
+    }
+
+    // 3. Ubah dokumen Firestore menjadi objek UserModel dan kembalikan
+    return UserModel.fromFirestore(doc);
+
+  } on FirebaseAuthException catch (e) {
+    // Terjemahkan kode error Firebase ke pesan yang mudah dipahami
+    throw Exception(_authErrorMessage(e.code));
+  }
+}</pre>
+
+  <div class="code-label">lib/main.dart — Inisialisasi dan Named Routes</div>
+  <pre>Future&lt;void&gt; main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(); // Wajib dipanggil sebelum pakai Firebase
+  _ensureAdminAccount();          // Setup akun admin pertama kali (non-blocking)
+  runApp(const RecycleMateApp());
+}
+
+// Semua route didaftarkan di sini — navigasi cukup pakai nama string
+routes: {
+  '/':               (_) =&gt; const SplashScreen(),
+  '/home':           (_) =&gt; const HomeScreen(),
+  '/login':          (_) =&gt; const LoginScreen(),
+  '/register':       (_) =&gt; const RegisterScreen(),
+  '/profile':        (_) =&gt; const ProfileScreen(),
+  '/admin':          (_) =&gt; const AdminScreen(),
+  '/open-store':     (_) =&gt; const OpenStoreScreen(),
+  '/manage-products':(_) =&gt; const ManageProductsScreen(),
+  '/forgot-password':(_) =&gt; const ForgotPasswordScreen(),
+},
+// Route /detail pakai onGenerateRoute karena butuh argumen (data produk)
+onGenerateRoute: (settings) {
+  if (settings.name == '/detail') {
+    final product = settings.arguments as Map&lt;String, dynamic&gt;;
+    return MaterialPageRoute(
+      builder: (_) =&gt; ProductDetailScreen(product: product),
+    );
+  }
+  return null;
+},</pre>
+
+  <h2>Pertanyaan yang Mungkin Ditanya</h2>
+
+  <div class="qa-block">
+    <div class="qa-q">Q: Bagaimana cara app tahu user sudah login atau belum?</div>
+    <div class="qa-a">SplashScreen mengecek <code>FirebaseAuth.instance.currentUser</code>. Firebase menyimpan sesi login secara lokal di perangkat. Jika tidak null berarti sudah login, langsung redirect ke /home. Jika null, redirect ke /login.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Q: Apa perbedaan peran buyer, seller, dan admin dalam kode?</div>
+    <div class="qa-a">Field <code>role</code> di Firestore collection <code>users</code>. UserModel punya getter <code>isAdmin</code> (role == 'admin') dan <code>isSeller</code> (role == 'seller' atau 'admin'). HomeScreen mengecek getter ini untuk menampilkan menu yang berbeda — buyer tidak lihat menu toko, admin dapat ikon panel admin.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Q: Kenapa ada fungsi _ensureAdminAccount() di main.dart?</div>
+    <div class="qa-a">Supaya akun admin otomatis terbuat saat pertama kali app dijalankan tanpa setup manual. Fungsi ini mengecek Firestore di <code>app_config/setup</code> — jika sudah ada flag <code>adminCreated: true</code>, fungsi langsung berhenti dan tidak membuat akun baru.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Q: Apa itu StatefulWidget dan kenapa LoginScreen menggunakannya?</div>
+    <div class="qa-a">StatefulWidget adalah widget yang punya state yang bisa berubah. LoginScreen membutuhkan ini karena ada state yang berubah: <code>_isLoading</code> (tombol berubah jadi spinner saat proses login) dan <code>_obscurePassword</code> (toggle tampilkan/sembunyikan password). Perubahan state dipanggil dengan <code>setState()</code>.</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════ ANGGOTA 2 ═══════════════ -->
+<div class="section">
+  <div class="member-title">Anggota 2 — Home &amp; Katalog Produk</div>
+  <div class="member-role">Bagian ini mencakup: tampilan utama marketplace, daftar produk dari database, filter berdasarkan kategori material, pencarian kata kunci, sistem favorit, dan halaman detail produk beserta proses pemesanan.</div>
+
+  <h2>File yang Dikuasai</h2>
+  <table class="files">
+    <tr><th>Nama File</th><th>Penjelasan Singkat</th><th>Baris</th></tr>
+    <tr><td>lib/screens/home_screen.dart</td><td>Halaman utama: AppBar dengan cart badge dan notifikasi, banner dinamis, chip filter kategori, search bar, grid produk.</td><td>560</td></tr>
+    <tr><td>lib/screens/product_detail_screen.dart</td><td>Halaman detail produk: galeri foto, info crafter, harga, material, deskripsi, tombol pesan dan donasi.</td><td>565</td></tr>
+    <tr><td>lib/widgets/product_card.dart</td><td>Kartu produk yang muncul di grid: gambar, nama, harga, ikon favorit.</td><td>~80</td></tr>
+    <tr><td>lib/widgets/category_chip.dart</td><td>Chip filter kategori yang bisa diklik (Semua, Plastik, Kayu, Kaca, Kain, Logam).</td><td>~40</td></tr>
+    <tr><td>lib/widgets/section_title.dart</td><td>Widget judul seksi yang dipakai berulang di berbagai bagian home screen.</td><td>~25</td></tr>
+    <tr><td>lib/models/product_model.dart</td><td>Struktur data Produk: id, name, price, material, imageUrl, crafterId, crafterName, description, isActive.</td><td>125</td></tr>
+  </table>
+
+  <h2>Fitur yang Dijelaskan</h2>
+  <ul>
+    <li><strong>Load Produk dari Firestore:</strong> Pakai <code>FutureBuilder</code> yang secara otomatis menampilkan loading spinner saat mengambil data, tampil error jika gagal, dan tampilkan grid jika berhasil.</li>
+    <li><strong>Banner Dinamis:</strong> Teks banner (judul, subjudul, statistik) diambil dari Firestore <code>app_config/site_settings</code> — bisa diubah admin tanpa update app.</li>
+    <li><strong>Filter Kategori:</strong> Chip pilihan material. Saat diklik, state <code>_selectedCategory</code> berubah, fungsi <code>_applyFilters()</code> menyaring list produk.</li>
+    <li><strong>Search Bar:</strong> Filter real-time berdasarkan nama dan deskripsi produk. Dilakukan di sisi Flutter (client-side) karena Firestore tidak mendukung full-text search.</li>
+    <li><strong>Favorit:</strong> State <code>Set&lt;String&gt; _favorites</code> menyimpan id produk yang di-like. Toggle dengan klik ikon hati.</li>
+    <li><strong>Cart Badge:</strong> Counter <code>_cartCount</code> di AppBar bertambah saat produk ditambahkan ke keranjang.</li>
+    <li><strong>Navigasi ke Detail:</strong> Menggunakan <code>Navigator.pushNamed(context, '/detail', arguments: product.toMap())</code> — data produk dikirim sebagai argumen.</li>
+    <li><strong>Pemesanan:</strong> Di halaman detail, saat user menekan tombol Pesan, data order dibuat di Firestore collection <code>orders</code>.</li>
+  </ul>
+
+  <h2>Penjelasan Kode Kunci</h2>
+
+  <div class="code-label">lib/screens/home_screen.dart — Fungsi Filter Produk</div>
+  <pre>// Fungsi ini dijalankan setiap kali kategori atau search berubah
+List&lt;ProductModel&gt; _applyFilters(List&lt;ProductModel&gt; all) {
+  var products = all;
+
+  // Filter 1: berdasarkan material (kategori chip yang dipilih)
+  if (_selectedCategory != 'Semua') {
+    products = products
+        .where((p) =&gt; p.material == _selectedCategory)
+        .toList();
+  }
+
+  // Filter 2: berdasarkan kata kunci pencarian
+  if (_searchQuery.isNotEmpty) {
+    final q = _searchQuery.toLowerCase();
+    products = products
+        .where((p) =&gt;
+            p.name.toLowerCase().contains(q) ||       // cari di nama
+            p.description.toLowerCase().contains(q)) // atau di deskripsi
+        .toList();
+  }
+
+  return products;
+}</pre>
+
+  <div class="code-label">lib/screens/home_screen.dart — FutureBuilder Load Data</div>
+  <pre>// FutureBuilder: widget bawaan Flutter untuk handle data async
+FutureBuilder&lt;List&lt;ProductModel&gt;&gt;(
+  // future: operasi async yang akan dijalankan
+  future: FirestoreService.getProducts(),
+
+  builder: (context, snapshot) {
+    // Saat masih loading: tampilkan spinner
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    // Saat ada error: tampilkan pesan
+    if (snapshot.hasError) {
+      return Center(child: Text('Gagal memuat: ${snapshot.error}'));
+    }
+
+    // Saat data berhasil: terapkan filter lalu tampilkan grid
+    final products = _applyFilters(snapshot.data ?? []);
+    return _buildProductGrid(products);
+  },
+)</pre>
+
+  <div class="code-label">lib/services/api_service.dart — Query Produk dari Firestore</div>
+  <pre>static Future&lt;List&lt;ProductModel&gt;&gt; getProducts({
+  String? material,
+  String? search,
+}) async {
+  // Query ke Firestore: ambil produk yang aktif, urutkan terbaru
+  Query query = _db
+      .collection('products')
+      .where('isActive', isEqualTo: true)
+      .orderBy('createdAt', descending: true);
+
+  // Filter material bisa ditambah langsung di query Firestore
+  if (material != null &amp;&amp; material != 'Semua') {
+    query = query.where('material', isEqualTo: material);
+  }
+
+  final snapshot = await query.get();
+  var products = snapshot.docs
+      .map((d) =&gt; ProductModel.fromFirestore(d))
+      .toList();
+
+  // Filter search dilakukan di Flutter (client-side)
+  // karena Firestore tidak support full-text search
+  if (search != null &amp;&amp; search.isNotEmpty) {
+    final q = search.toLowerCase();
+    products = products
+        .where((p) =&gt; p.name.toLowerCase().contains(q) ||
+                      p.description.toLowerCase().contains(q))
+        .toList();
+  }
+
+  return products;
+}</pre>
+
+  <h2>Pertanyaan yang Mungkin Ditanya</h2>
+
+  <div class="qa-block">
+    <div class="qa-q">Q: Apa itu FutureBuilder dan kenapa dipakai?</div>
+    <div class="qa-a">FutureBuilder adalah widget Flutter bawaan untuk menampilkan UI yang berbeda tergantung kondisi Future (async). Kondisi yang ditangani: <code>ConnectionState.waiting</code> (tampilkan loading), <code>hasError</code> (tampilkan pesan error), dan saat data tersedia (tampilkan grid produk). Ini cara standar Flutter untuk handle data async.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Q: Kenapa filter search dilakukan di Flutter, bukan di Firestore?</div>
+    <div class="qa-a">Firestore tidak mendukung full-text search secara native. Untuk mencari teks dalam string, harus dilakukan di sisi Flutter menggunakan <code>String.contains()</code>. Cara ini cocok untuk data berjumlah ratusan. Untuk skala ribuan produk, perlu layanan tambahan seperti Algolia.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Q: Bagaimana cara navigasi ke halaman detail produk sambil mengirim data?</div>
+    <div class="qa-a">Menggunakan <code>Navigator.pushNamed(context, '/detail', arguments: product.toMap())</code>. Di main.dart, route <code>/detail</code> didaftarkan di <code>onGenerateRoute</code> (bukan di <code>routes</code> biasa) karena butuh argumen dinamis berupa Map data produk yang berbeda setiap produk.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Q: Bagaimana proses pemesanan produk di halaman detail?</div>
+    <div class="qa-a">User mengisi form (jumlah, alamat, catatan) lalu tekan tombol Pesan. App memanggil <code>FirestoreService.createOrder()</code> yang membuat dokumen baru di Firestore collection <code>orders</code> berisi: productId, buyerId, quantity, totalPrice, alamat, dan status awal 'pending'.</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════ ANGGOTA 3 ═══════════════ -->
+<div class="section">
+  <div class="member-title">Anggota 3 — Toko &amp; Upload Produk (Seller)</div>
+  <div class="member-role">Bagian ini mencakup: fitur untuk seller — membuka toko baru, mengedit toko, mengupload produk dengan foto ke Firebase Storage, serta mengelola daftar produk milik sendiri.</div>
+
+  <h2>File yang Dikuasai</h2>
+  <table class="files">
+    <tr><th>Nama File</th><th>Penjelasan Singkat</th><th>Baris</th></tr>
+    <tr><td>lib/screens/open_store_screen.dart</td><td>Form buka toko baru: nama toko, deskripsi, upload foto banner. Role user diubah ke 'seller' setelah berhasil.</td><td>616</td></tr>
+    <tr><td>lib/screens/edit_store_screen.dart</td><td>Edit informasi toko yang sudah ada: update nama, deskripsi, ganti foto banner.</td><td>339</td></tr>
+    <tr><td>lib/screens/manage_products_screen.dart</td><td>Daftar produk milik seller: tampilkan produk sendiri, nonaktifkan, hapus, navigasi ke upload.</td><td>623</td></tr>
+    <tr><td>lib/screens/upload_screen.dart</td><td>Form upload produk baru: nama, harga, kategori material, deskripsi, dan foto produk dari galeri.</td><td>423</td></tr>
+    <tr><td>lib/services/storage_service.dart</td><td>Upload file foto ke Firebase Storage dan mengembalikan URL download publik.</td><td>55</td></tr>
+    <tr><td>lib/models/store_model.dart</td><td>Struktur data Store: id, name, description, ownerId, bannerUrl, rating, isActive.</td><td>100</td></tr>
+    <tr><td>lib/widgets/app_image.dart</td><td>Widget gambar dengan fallback otomatis jika URL gambar gagal dimuat (tampilkan placeholder).</td><td>~50</td></tr>
+  </table>
+
+  <h2>Fitur yang Dijelaskan</h2>
+  <ul>
+    <li><strong>Buka Toko:</strong> Buyer mengisi form toko. Setelah submit, app membuat dokumen di collection <code>stores</code> DAN mengupdate field <code>role</code> user dari 'buyer' menjadi 'seller' di collection <code>users</code>.</li>
+    <li><strong>Upload Foto:</strong> Pakai library <code>image_picker</code> untuk memilih foto dari galeri. Foto diupload ke Firebase Storage via <code>StorageService.uploadFile()</code>. URL hasil upload disimpan di Firestore.</li>
+    <li><strong>Upload Produk Baru:</strong> Form upload menyimpan data produk ke Firestore collection <code>products</code> beserta URL foto, crafterId, dan waktu dibuat.</li>
+    <li><strong>Produk Saya:</strong> Query ke Firestore dengan filter <code>crafterId == uid</code> supaya hanya menampilkan produk milik seller yang sedang login.</li>
+    <li><strong>Soft Delete:</strong> Produk tidak benar-benar dihapus. Hanya field <code>isActive</code> diubah ke <code>false</code>. Produk tidak muncul di marketplace tapi data tetap ada di database.</li>
+    <li><strong>Edit Toko:</strong> Update dokumen toko di Firestore, termasuk opsi ganti foto banner (upload foto baru ke Storage, ganti URL lama).</li>
+    <li><strong>Validasi Form:</strong> Semua form pakai <code>GlobalKey&lt;FormState&gt;</code> dengan fungsi validator per field — form tidak bisa disubmit jika ada input yang kosong atau salah format.</li>
+    <li><strong>Loading State:</strong> Boolean <code>_isLoading</code> diset true saat proses upload berlangsung — tombol submit jadi disabled dan tampil spinner agar user tidak klik berkali-kali.</li>
+  </ul>
+
+  <h2>Penjelasan Kode Kunci</h2>
+
+  <div class="code-label">lib/services/storage_service.dart — Upload Foto ke Firebase Storage</div>
+  <pre>class StorageService {
+  static final _storage = FirebaseStorage.instance;
+
+  // Upload file, kembalikan URL publik yang bisa diakses dari mana saja
+  static Future&lt;String&gt; uploadFile(
+    File file, {
+    String folder = 'products', // bisa diubah ke 'avatars', 'stores', dll
+  }) async {
+    // Buat nama file unik menggunakan timestamp agar tidak tumpang tindih
+    final path = '$folder/${DateTime.now().millisecondsSinceEpoch}';
+
+    // Upload file ke Firebase Storage
+    final ref = _storage.ref(path);
+    await ref.putFile(file);
+
+    // Dapatkan URL download yang bisa digunakan sebagai src gambar
+    return await ref.getDownloadURL();
+  }
+}</pre>
+
+  <div class="code-label">lib/screens/upload_screen.dart — Proses Upload Produk (alur lengkap)</div>
+  <pre>Future&lt;void&gt; _uploadProduct() async {
+  // 1. Validasi semua input form terlebih dahulu
+  if (!_formKey.currentState!.validate()) return;
+  if (_imageFile == null) {
+    _showError('Pilih foto produk terlebih dahulu.');
+    return;
+  }
+
+  setState(() =&gt; _isLoading = true); // tampilkan loading spinner
+
+  try {
+    // 2. Upload foto ke Firebase Storage, dapatkan URL-nya
+    final imageUrl = await StorageService.uploadFile(
+      _imageFile!,
+      folder: 'products',
+    );
+
+    // 3. Simpan data produk + URL foto ke Firestore
+    await FirestoreService.createProduct({
+      'name': _nameController.text.trim(),
+      'price': double.parse(_priceController.text),
+      'material': _selectedMaterial, // Plastik / Kayu / Kaca / dll
+      'description': _descController.text.trim(),
+      'imageUrl': imageUrl,           // URL foto dari Storage
+    });
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Produk berhasil diupload!')),
+      );
+      Navigator.pop(context); // kembali ke halaman sebelumnya
+    }
+  } catch (e) {
+    _showError('Gagal upload: $e');
+  } finally {
+    if (mounted) setState(() =&gt; _isLoading = false);
+  }
+}</pre>
+
+  <div class="code-label">lib/services/api_service.dart — Ambil Produk Milik Seller</div>
+  <pre>// Hanya ambil produk yang dibuat oleh seller yang sedang login
+static Future&lt;List&lt;ProductModel&gt;&gt; getMyProducts() async {
+  if (_uid == null) throw Exception('Belum login.');
+
+  final snapshot = await _db
+      .collection('products')
+      .where('crafterId', isEqualTo: _uid) // filter berdasarkan uid seller
+      .where('isActive', isEqualTo: true)
+      .orderBy('createdAt', descending: true)
+      .get();
+
+  return snapshot.docs
+      .map((d) =&gt; ProductModel.fromFirestore(d))
+      .toList();
+}</pre>
+
+  <h2>Pertanyaan yang Mungkin Ditanya</h2>
+
+  <div class="qa-block">
+    <div class="qa-q">Q: Bagaimana cara foto produk disimpan? Apakah langsung ke Firestore?</div>
+    <div class="qa-a">Tidak bisa langsung ke Firestore karena Firestore hanya menyimpan teks, angka, dan data kecil. Foto diupload ke <strong>Firebase Storage</strong> menggunakan <code>StorageService.uploadFile()</code>. Hasilnya berupa URL string panjang, URL itulah yang disimpan di Firestore pada field <code>imageUrl</code>. Saat app butuh tampilkan gambar, pakai URL tersebut sebagai sumber gambar.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Q: Apa itu soft delete dan kenapa tidak langsung hapus dari database?</div>
+    <div class="qa-a">Soft delete artinya tidak benar-benar menghapus dokumen dari Firestore. Hanya field <code>isActive</code> yang diubah menjadi <code>false</code>. Alasan: data pesanan lama yang mereferensi produk tersebut tidak menjadi rusak (misalnya, riwayat pesanan pembeli masih bisa ditampilkan). Admin juga bisa melihat riwayat produk yang dinonaktifkan. Hard delete (benar-benar hapus) dilakukan khusus oleh admin.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Q: Bagaimana proses dari buyer menjadi seller?</div>
+    <div class="qa-a">Buyer pergi ke halaman OpenStoreScreen, mengisi nama toko dan deskripsi, lalu submit. Di backend, <code>FirestoreService.createStore()</code> menjalankan dua operasi: (1) membuat dokumen baru di collection <code>stores</code>, dan (2) mengupdate field <code>role</code> user di collection <code>users</code> dari 'buyer' menjadi 'seller'. HomeScreen kemudian menampilkan menu toko yang sebelumnya tersembunyi.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Q: Apa fungsi GlobalKey&lt;FormState&gt; pada form upload?</div>
+    <div class="qa-a"><code>GlobalKey&lt;FormState&gt;</code> adalah kunci unik yang menghubungkan widget Form dengan kode kita. Dengan memanggil <code>_formKey.currentState!.validate()</code>, Flutter akan menjalankan fungsi validator pada setiap TextFormField di dalam Form tersebut. Jika ada yang tidak valid, form menampilkan pesan error di bawah field dan fungsi mengembalikan false — sehingga proses upload tidak dilanjutkan.</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════ ANGGOTA 4 ═══════════════ -->
+<div class="section">
+  <div class="member-title">Anggota 4 — Admin Panel &amp; Profil User</div>
+  <div class="member-role">Bagian ini mencakup: panel administrasi lengkap untuk mengelola seluruh data aplikasi (user, produk, pesanan, toko, donasi, pengaturan situs), serta halaman profil pengguna dengan edit akun dan riwayat aktivitas.</div>
+
+  <h2>File yang Dikuasai</h2>
+  <table class="files">
+    <tr><th>Nama File</th><th>Penjelasan Singkat</th><th>Baris</th></tr>
+    <tr><td>lib/screens/admin_screen.dart</td><td>Panel admin dengan TabBar: dashboard statistik, kelola user, produk, pesanan, toko, donasi, dan site settings.</td><td>970</td></tr>
+    <tr><td>lib/screens/profile_screen.dart</td><td>Halaman profil: tampilkan dan edit info user, ganti avatar, riwayat pesanan, riwayat donasi, tombol logout.</td><td>940</td></tr>
+    <tr><td>lib/services/api_service.dart</td><td>Semua operasi Firestore: CRUD produk, pesanan, donasi, toko, user, statistik admin, update status pesanan.</td><td>567</td></tr>
+    <tr><td>lib/models/order_model.dart</td><td>Struktur data Order: id, productId, buyerId, quantity, totalPrice, status, address, createdAt.</td><td>98</td></tr>
+    <tr><td>lib/models/donation_model.dart</td><td>Struktur data Donation: id, productId, donorId, message, status, createdAt.</td><td>70</td></tr>
+  </table>
+
+  <h2>Fitur yang Dijelaskan</h2>
+  <ul>
+    <li><strong>Dashboard Statistik:</strong> Admin melihat total user, produk aktif, pesanan, dan donasi dalam satu tampilan. Data diambil dari Firestore secara paralel menggunakan <code>Future.wait()</code>.</li>
+    <li><strong>Kelola User:</strong> Admin bisa melihat semua user, mengubah role (buyer ke seller atau sebaliknya), dan menghapus akun user.</li>
+    <li><strong>Kelola Produk:</strong> Admin bisa melihat semua produk dari semua seller, menyuspend (nonaktifkan), atau menghapus permanen produk tertentu.</li>
+    <li><strong>Kelola Pesanan:</strong> Admin melihat semua pesanan dan mengupdate statusnya: pending → processing → shipped → delivered.</li>
+    <li><strong>Kelola Donasi:</strong> Monitor semua permintaan donasi yang masuk dan mengupdate status penerimaannya.</li>
+    <li><strong>Site Settings:</strong> Admin bisa mengedit teks banner utama homepage, teks promo, dan toggle mode maintenance. Data disimpan ke Firestore <code>app_config/site_settings</code>.</li>
+    <li><strong>Edit Profil:</strong> User mengupdate nama, kota, nomor HP, bio, dan foto avatar (foto baru diupload ke Firebase Storage).</li>
+    <li><strong>Riwayat Pesanan di Profil:</strong> Semua pesanan user ditampilkan dengan filter <code>buyerId == uid</code> di Firestore collection <code>orders</code>.</li>
+  </ul>
+
+  <h2>Penjelasan Kode Kunci</h2>
+
+  <div class="code-label">lib/services/api_service.dart — Statistik Admin dengan Paralel Query</div>
+  <pre>static Future&lt;Map&lt;String, int&gt;&gt; getAdminStats() async {
+  // Future.wait() menjalankan semua query BERSAMAAN (paralel)
+  // Jika masing-masing butuh 200ms, total hanya ~200ms (bukan 800ms)
+  final results = await Future.wait([
+    _db.collection('users').count().get(),
+    _db.collection('products')
+       .where('isActive', isEqualTo: true)
+       .count().get(),
+    _db.collection('orders').count().get(),
+    _db.collection('donations').count().get(),
+  ]);
+
+  // results adalah List — urutan sama dengan urutan Future di atas
+  return {
+    'users':     results[0].count ?? 0,
+    'products':  results[1].count ?? 0,
+    'orders':    results[2].count ?? 0,
+    'donations': results[3].count ?? 0,
+  };
+}</pre>
+
+  <div class="code-label">lib/services/api_service.dart — Update Status Pesanan</div>
+  <pre>// Status flow: pending → processing → shipped → delivered
+static Future&lt;void&gt; updateOrderStatus(
+    String orderId, String status) async {
+
+  // Update field status di dokumen pesanan di Firestore
+  await _db
+      .collection('orders')
+      .doc(orderId)
+      .update({
+        'status': status,
+        // serverTimestamp() = waktu server Firebase, bukan waktu device
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+  // Kirim email notifikasi ke pembeli saat status menjadi 'shipped'
+  if (status == 'shipped') {
+    _notifyBuyerShipped(orderId); // non-blocking, tidak di-await
+  }
+}</pre>
+
+  <div class="code-label">lib/screens/admin_screen.dart — Kelola User (ubah role)</div>
+  <pre>// Fungsi di AdminScreen untuk mengubah role user
+Future&lt;void&gt; _changeUserRole(String userId, String newRole) async {
+  await FirestoreService.updateUser(userId, {'role': newRole});
+
+  // Refresh daftar user setelah update
+  setState(() {
+    _loadUsers(); // load ulang dari Firestore
+  });
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text('Role user diubah menjadi $newRole')),
+  );
+}
+
+// Memanggil fungsi ini melalui dropdown di setiap baris user:
+DropdownButton&lt;String&gt;(
+  value: user.role,
+  items: ['buyer', 'seller', 'admin']
+      .map((r) =&gt; DropdownMenuItem(value: r, child: Text(r)))
+      .toList(),
+  onChanged: (newRole) =&gt;
+      _changeUserRole(user.id, newRole!),
+)</pre>
+
+  <div class="code-label">lib/screens/profile_screen.dart — Update Profil User</div>
+  <pre>Future&lt;void&gt; _saveProfile() async {
+  if (!_formKey.currentState!.validate()) return;
+  setState(() =&gt; _isLoading = true);
+
+  try {
+    String? avatarUrl = _currentAvatarUrl;
+
+    // Jika user memilih foto baru, upload dulu ke Firebase Storage
+    if (_newAvatarFile != null) {
+      avatarUrl = await StorageService.uploadFile(
+        _newAvatarFile!,
+        folder: 'avatars',
+      );
+    }
+
+    // Update dokumen user di Firestore
+    await FirestoreService.updateUser(
+      FirebaseAuth.instance.currentUser!.uid,
+      {
+        'name': _nameController.text.trim(),
+        'city': _cityController.text.trim(),
+        'phone': _phoneController.text.trim(),
+        'bio': _bioController.text.trim(),
+        'avatar': avatarUrl ?? '',
+      },
+    );
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profil berhasil diperbarui!')),
+      );
+    }
+  } finally {
+    if (mounted) setState(() =&gt; _isLoading = false);
+  }
+}</pre>
+
+  <h2>Pertanyaan yang Mungkin Ditanya</h2>
+
+  <div class="qa-block">
+    <div class="qa-q">Q: Bagaimana keamanan panel admin? Apa user biasa bisa mengakses halaman /admin?</div>
+    <div class="qa-a">AdminScreen mengecek <code>UserModel.isAdmin</code> di <code>initState()</code>. Jika user bukan admin, langsung redirect ke home menggunakan <code>Navigator.pushReplacementNamed(context, '/home')</code>. Di HomeScreen, tombol ikon admin hanya ditampilkan jika <code>_isAdmin == true</code>. Role admin hanya bisa diset lewat Firestore dan tidak bisa diubah oleh user sendiri dari app.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Q: Apa keuntungan Future.wait() dibanding await berurutan?</div>
+    <div class="qa-a">Dengan await berurutan, 4 query masing-masing 200ms akan membutuhkan total 800ms karena dijalankan satu per satu. Dengan <code>Future.wait([...])</code>, semua query berjalan bersamaan (paralel) sehingga total hanya sekitar 200ms. Ini penting untuk dashboard statistik agar tidak membuat pengguna menunggu lama.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Q: Apa itu FieldValue.serverTimestamp() dan kenapa lebih baik dari DateTime.now()?</div>
+    <div class="qa-a"><code>FieldValue.serverTimestamp()</code> menggunakan waktu dari server Firebase, bukan dari perangkat user. Ini lebih akurat karena waktu perangkat user bisa berbeda (salah setting, timezone berbeda). Untuk data seperti waktu pesanan dibuat atau diupdate, waktu server jauh lebih dapat diandalkan.</div>
+  </div>
+
+  <div class="qa-block">
+    <div class="qa-q">Q: Bagaimana admin bisa mengubah konten banner homepage tanpa update app?</div>
+    <div class="qa-a">Admin mengisi form di tab "Site Settings" di AdminScreen. Saat disimpan, data ditulis ke Firestore di <code>app_config/site_settings</code>. HomeScreen membaca dokumen yang sama setiap kali dibuka menggunakan FutureBuilder. Karena data dibaca langsung dari Firestore, perubahan yang dibuat admin langsung terlihat di app semua pengguna tanpa perlu merilis update.</div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RecycleMate – Pembagian Tugas Presentasi</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #f0f4f0;
+    color: #1a1a1a;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  /* ── COVER PAGE ── */
+  .cover {
+    page-break-after: always;
+    background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -80px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .cover-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: none;
+  }
+  .cover h1 {
+    font-size: 52px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  }
+  .cover .tagline {
+    font-size: 18px;
+    opacity: 0.85;
+    margin-bottom: 50px;
+    font-weight: 300;
+  }
+  .cover-badge {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 50px;
+    padding: 10px 28px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 60px;
+  }
+  .cover-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    width: 100%;
+    max-width: 800px;
+  }
+  .cover-member-card {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 16px;
+    padding: 18px 12px;
+    backdrop-filter: blur(4px);
+  }
+  .cover-member-card .number {
+    font-size: 28px;
+    font-weight: 700;
+    opacity: 0.6;
+    margin-bottom: 4px;
+  }
+  .cover-member-card .role {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+    font-weight: 600;
+  }
+  .cover-member-card .area {
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+  .cover-footer {
+    position: absolute;
+    bottom: 30px;
+    font-size: 11px;
+    opacity: 0.5;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ── TECH OVERVIEW PAGE ── */
+  .tech-page {
+    page-break-after: always;
+    padding: 50px 60px;
+    min-height: 100vh;
+    background: #fff;
+  }
+  .page-header {
+    border-bottom: 3px solid #2E7D32;
+    padding-bottom: 16px;
+    margin-bottom: 32px;
+  }
+  .page-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1B5E20;
+  }
+  .page-header p {
+    color: #666;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  .tech-card {
+    background: #f8fdf8;
+    border: 1px solid #c8e6c9;
+    border-left: 4px solid #2E7D32;
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .tech-card h4 {
+    color: #1B5E20;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .tech-card ul { list-style: none; }
+  .tech-card ul li {
+    padding: 3px 0;
+    font-size: 12px;
+    color: #444;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .tech-card ul li::before { content: '▸'; color: #4CAF50; flex-shrink: 0; }
+
+  .structure-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .struct-box {
+    background: #f5f5f5;
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .struct-box h4 {
+    font-size: 12px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .file-tree {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 11px;
+    color: #555;
+    line-height: 1.8;
+  }
+  .file-tree .folder { color: #1B5E20; font-weight: 600; }
+  .file-tree .file-big { color: #E65100; }
+  .file-tree .file-med { color: #0277BD; }
+  .file-tree .file-small { color: #666; }
+
+  /* ── MEMBER PAGES ── */
+  .member-page {
+    page-break-after: always;
+    padding: 50px 60px;
+    min-height: 100vh;
+    background: #fff;
+  }
+  .member-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e8f5e9;
+  }
+  .member-num {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+  .m1 { background: linear-gradient(135deg, #1565C0, #1976D2); }
+  .m2 { background: linear-gradient(135deg, #2E7D32, #43A047); }
+  .m3 { background: linear-gradient(135deg, #E65100, #F57C00); }
+  .m4 { background: linear-gradient(135deg, #6A1B9A, #8E24AA); }
+
+  .member-info h2 { font-size: 22px; font-weight: 700; color: #1a1a1a; }
+  .member-info .role-badge {
+    display: inline-block;
+    padding: 3px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+    color: white;
+  }
+  .rb1 { background: #1565C0; }
+  .rb2 { background: #2E7D32; }
+  .rb3 { background: #E65100; }
+  .rb4 { background: #6A1B9A; }
+
+  .member-info .desc {
+    font-size: 12px;
+    color: #666;
+    margin-top: 6px;
+    max-width: 500px;
+  }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .content-grid.full { grid-template-columns: 1fr; }
+
+  .section-box {
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .section-box h3 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #555;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-box h3 .icon { font-size: 14px; }
+
+  .file-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+  }
+  .file-item:last-child { border-bottom: none; }
+  .file-name {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: #1B5E20;
+    white-space: nowrap;
+  }
+  .file-desc { font-size: 11px; color: #666; }
+  .file-lines {
+    margin-left: auto;
+    font-size: 10px;
+    font-family: 'Source Code Pro', monospace;
+    background: #e8f5e9;
+    color: #2E7D32;
+    padding: 2px 7px;
+    border-radius: 10px;
+    white-space: nowrap;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .feature-list { list-style: none; }
+  .feature-list li {
+    padding: 6px 0;
+    font-size: 12px;
+    border-bottom: 1px dashed #eee;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .feature-list li:last-child { border-bottom: none; }
+  .feature-list li .check {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    color: white;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .c1 { background: #1565C0; }
+  .c2 { background: #2E7D32; }
+  .c3 { background: #E65100; }
+  .c4 { background: #6A1B9A; }
+
+  /* Code blocks */
+  .code-section {
+    background: #1a1a2e;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .code-header {
+    background: #16213e;
+    padding: 8px 14px;
+    font-size: 11px;
+    color: #a0a0b0;
+    font-family: 'Source Code Pro', monospace;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .code-header .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #ffbd2e; }
+  .dot-g { background: #28c840; }
+  .code-body {
+    padding: 14px 16px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 10.5px;
+    line-height: 1.7;
+    color: #e0e0e0;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .kw { color: #c792ea; }
+  .fn { color: #82aaff; }
+  .str { color: #c3e88d; }
+  .cm { color: #546e7a; font-style: italic; }
+  .cls { color: #ffcb6b; }
+  .num { color: #f78c6c; }
+  .op { color: #89ddff; }
+
+  /* Q&A Section */
+  .qa-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .qa-item {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .qa-q {
+    background: #f5f5f5;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .qa-q .q-badge {
+    background: #333;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .qa-a {
+    padding: 10px 14px;
+    font-size: 11.5px;
+    color: #444;
+    line-height: 1.6;
+  }
+  .qa-a strong { color: #1B5E20; }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 14px;
+    background: #f9f9f9;
+    border-radius: 10px;
+  }
+  .flow-step {
+    background: white;
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    min-width: 90px;
+  }
+  .flow-arrow { color: #999; font-size: 16px; }
+
+  /* Summary page */
+  .summary-page {
+    padding: 50px 60px;
+    min-height: 100vh;
+    background: #fff;
+  }
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .summary-table th {
+    background: #1B5E20;
+    color: white;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .summary-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: top;
+  }
+  .summary-table tr:nth-child(even) td { background: #fafafa; }
+  .summary-table tr:hover td { background: #f1f8e9; }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    margin: 1px;
+    color: white;
+  }
+  .tag-blue { background: #1565C0; }
+  .tag-green { background: #2E7D32; }
+  .tag-orange { background: #E65100; }
+  .tag-purple { background: #6A1B9A; }
+
+  .tip-box {
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-left: 4px solid #FFC107;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 20px;
+    font-size: 12px;
+  }
+  .tip-box h4 { color: #F57F17; font-size: 13px; margin-bottom: 8px; }
+  .tip-box ul { list-style: none; }
+  .tip-box ul li { padding: 3px 0; display: flex; gap: 8px; }
+  .tip-box ul li::before { content: '💡'; }
+
+  @media print {
+    body { background: white; }
+    .cover, .tech-page, .member-page { page-break-after: always; }
+    .code-body { font-size: 9.5px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════
+     COVER PAGE
+══════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-icon">♻️</div>
+  <h1>RecycleMate</h1>
+  <p class="tagline">Marketplace Upcycle — Flutter + Firebase</p>
+  <div class="cover-badge">📋 Pembagian Tugas Presentasi</div>
+
+  <div class="cover-grid">
+    <div class="cover-member-card">
+      <div class="number">01</div>
+      <div class="role">Anggota 1</div>
+      <div class="area">Arsitektur &amp; Autentikasi</div>
+    </div>
+    <div class="cover-member-card">
+      <div class="number">02</div>
+      <div class="role">Anggota 2</div>
+      <div class="area">Home &amp; Katalog Produk</div>
+    </div>
+    <div class="cover-member-card">
+      <div class="number">03</div>
+      <div class="role">Anggota 3</div>
+      <div class="area">Toko &amp; Upload Produk</div>
+    </div>
+    <div class="cover-member-card">
+      <div class="number">04</div>
+      <div class="role">Anggota 4</div>
+      <div class="area">Admin &amp; Profil User</div>
+    </div>
+  </div>
+
+  <div class="cover-footer">RecycleMate · Kelompok Presentasi</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     TECH OVERVIEW PAGE
+══════════════════════════════════════════════════ -->
+<div class="tech-page">
+  <div class="page-header">
+    <h2>🏗️ Gambaran Umum Proyek</h2>
+    <p>Sebelum presentasi, semua anggota wajib paham arsitektur ini</p>
+  </div>
+
+  <div class="tech-grid">
+    <div class="tech-card">
+      <h4>🎯 Tujuan Aplikasi</h4>
+      <ul>
+        <li>Marketplace jual-beli produk upcycle (daur ulang kreatif)</li>
+        <li>3 peran: <strong>Buyer</strong> (pembeli), <strong>Seller</strong> (pengrajin), <strong>Admin</strong></li>
+        <li>Buyer bisa beli & donasi; Seller buka toko & upload produk</li>
+        <li>Admin kelola pengguna, produk, pesanan, &amp; toko</li>
+      </ul>
+    </div>
+    <div class="tech-card">
+      <h4>📦 Tech Stack</h4>
+      <ul>
+        <li>Flutter (cross-platform UI framework)</li>
+        <li>Firebase Auth (login/register/logout)</li>
+        <li>Cloud Firestore (database NoSQL real-time)</li>
+        <li>Firebase Storage (upload foto produk/avatar)</li>
+        <li>Google Fonts: Poppins</li>
+        <li>Font Awesome Icons</li>
+      </ul>
+    </div>
+    <div class="tech-card">
+      <h4>🗂️ Pola Arsitektur</h4>
+      <ul>
+        <li><strong>Screens</strong> → UI halaman (StatefulWidget)</li>
+        <li><strong>Services</strong> → logika bisnis & panggil Firebase</li>
+        <li><strong>Models</strong> → struktur data (class Dart)</li>
+        <li><strong>Widgets</strong> → komponen UI reusable</li>
+        <li>Routing → named routes di main.dart</li>
+        <li>State → setState() lokal per widget</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="structure-grid">
+    <div class="struct-box">
+      <h4>📁 Struktur File lib/</h4>
+      <div class="file-tree">
+<span class="folder">lib/</span>
+├── <span class="folder">screens/</span>          <span class="cm">← halaman UI</span>
+│   ├── <span class="file-big">admin_screen.dart</span>      <span class="cm">970 baris</span>
+│   ├── <span class="file-big">profile_screen.dart</span>    <span class="cm">940 baris</span>
+│   ├── <span class="file-big">home_screen.dart</span>       <span class="cm">560 baris</span>
+│   ├── <span class="file-big">product_detail_screen.dart</span> <span class="cm">565 baris</span>
+│   ├── <span class="file-big">manage_products_screen.dart</span> <span class="cm">623 baris</span>
+│   ├── <span class="file-big">open_store_screen.dart</span> <span class="cm">616 baris</span>
+│   ├── <span class="file-med">upload_screen.dart</span>     <span class="cm">423 baris</span>
+│   ├── <span class="file-med">register_screen.dart</span>   <span class="cm">330 baris</span>
+│   ├── <span class="file-med">login_screen.dart</span>      <span class="cm">242 baris</span>
+│   ├── <span class="file-med">forgot_password_screen.dart</span> <span class="cm">288 baris</span>
+│   └── <span class="file-small">splash_screen.dart</span>     <span class="cm">109 baris</span>
+├── <span class="folder">services/</span>
+│   ├── <span class="file-big">api_service.dart</span>       <span class="cm">567 baris</span>
+│   ├── <span class="file-med">auth_service.dart</span>      <span class="cm">170 baris</span>
+│   ├── <span class="file-med">email_service.dart</span>     <span class="cm">137 baris</span>
+│   └── <span class="file-small">storage_service.dart</span>   <span class="cm">55 baris</span>
+├── <span class="folder">models/</span>
+└── <span class="folder">widgets/</span>
+      </div>
+    </div>
+    <div class="struct-box">
+      <h4>🔄 Alur Data Firebase</h4>
+      <div class="flow" style="flex-direction:column; align-items:flex-start; gap:6px;">
+        <div style="font-size:11px; color:#555; font-weight:600; margin-bottom:4px;">Collection Firestore:</div>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <span class="tag tag-blue">users</span>
+          <span class="tag tag-green">products</span>
+          <span class="tag tag-orange">orders</span>
+          <span class="tag tag-purple">stores</span>
+          <span class="tag tag-blue">donations</span>
+          <span class="tag tag-green">app_config</span>
+        </div>
+        <div style="margin-top:10px; font-size:11px; color:#555; font-weight:600;">Alur Login:</div>
+        <div class="flow" style="padding:0; background:transparent;">
+          <div class="flow-step">User input</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">auth_service</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">Firebase Auth</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">Firestore users</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">HomeScreen</div>
+        </div>
+        <div style="margin-top:10px; font-size:11px; color:#555; font-weight:600;">Alur Upload Produk:</div>
+        <div class="flow" style="padding:0; background:transparent;">
+          <div class="flow-step">Form Upload</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">Storage Service</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">Firebase Storage</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">api_service</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">products collection</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     ANGGOTA 1: ARSITEKTUR & AUTENTIKASI
+══════════════════════════════════════════════════ -->
+<div class="member-page">
+  <div class="member-header">
+    <div class="member-num m1">01</div>
+    <div class="member-info">
+      <h2>Anggota 1 — Arsitektur &amp; Autentikasi</h2>
+      <span class="role-badge rb1">Core Architecture &amp; Auth</span>
+      <p class="desc">Bertanggung jawab atas fondasi aplikasi: cara app dijalankan, sistem login/register, keamanan akun, dan alur autentikasi Firebase.</p>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="section-box">
+      <h3><span class="icon">📄</span> File yang Dikuasai</h3>
+      <div class="file-item">
+        <div>
+          <div class="file-name">main.dart</div>
+          <div class="file-desc">Entry point app — inisialisasi Firebase, routing, setup admin otomatis</div>
+        </div>
+        <div class="file-lines">107 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">services/auth_service.dart</div>
+          <div class="file-desc">Register, login, logout, getProfile, reset password via Firebase Auth</div>
+        </div>
+        <div class="file-lines">170 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">services/email_service.dart</div>
+          <div class="file-desc">Kirim email konfirmasi pesanan menggunakan EmailJS</div>
+        </div>
+        <div class="file-lines">137 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">screens/login_screen.dart</div>
+          <div class="file-desc">Form login dengan validasi, loading state, error handling</div>
+        </div>
+        <div class="file-lines">242 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">screens/register_screen.dart</div>
+          <div class="file-desc">Form register — nama, email, password, kota, no. HP</div>
+        </div>
+        <div class="file-lines">330 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">screens/forgot_password_screen.dart</div>
+          <div class="file-desc">Reset password via email Firebase, input validasi + feedback</div>
+        </div>
+        <div class="file-lines">288 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">screens/splash_screen.dart</div>
+          <div class="file-desc">Loading screen, cek status login, redirect otomatis ke home/login</div>
+        </div>
+        <div class="file-lines">109 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">models/user_model.dart</div>
+          <div class="file-desc">Struktur data User: id, name, email, role, city, phone, avatar</div>
+        </div>
+        <div class="file-lines">74 baris</div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <h3><span class="icon">✅</span> Fitur yang Dijelaskan</h3>
+      <ul class="feature-list">
+        <li><span class="check c1">✓</span><div><strong>Splash Screen:</strong> Auto-cek login state pakai <code>FirebaseAuth.instance.currentUser</code>, redirect ke home kalau sudah login</div></li>
+        <li><span class="check c1">✓</span><div><strong>Login:</strong> Validasi form, panggil <code>FirebaseAuthService.login()</code>, error handling (wrong-password, user-not-found)</div></li>
+        <li><span class="check c1">✓</span><div><strong>Register:</strong> Buat akun Firebase Auth + simpan data ke Firestore collection <code>users</code></div></li>
+        <li><span class="check c1">✓</span><div><strong>Forgot Password:</strong> Kirim email reset via <code>sendPasswordResetEmail()</code> Firebase</div></li>
+        <li><span class="check c1">✓</span><div><strong>Role System:</strong> 3 role — buyer, seller, admin — disimpan di Firestore field <code>role</code></div></li>
+        <li><span class="check c1">✓</span><div><strong>Auto Admin Setup:</strong> <code>_ensureAdminAccount()</code> di main.dart — buat akun admin sekali jalan saat app pertama dipakai</div></li>
+        <li><span class="check c1">✓</span><div><strong>Named Routes:</strong> Semua navigasi pakai <code>Navigator.pushNamed()</code> → didaftarkan di <code>MaterialApp.routes</code></div></li>
+        <li><span class="check c1">✓</span><div><strong>Theme:</strong> Warna utama <code>#2E7D32</code> (hijau), font Poppins, Material 3</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="content-grid" style="margin-top: 16px;">
+    <div class="section-box">
+      <h3><span class="icon">💻</span> Kode Kunci — auth_service.dart</h3>
+      <div class="code-section">
+        <div class="code-header">
+          <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+          lib/services/auth_service.dart
+        </div>
+        <div class="code-body"><span class="cm">// Fungsi login — dipanggil dari LoginScreen</span>
+<span class="kw">static</span> <span class="cls">Future</span>&lt;<span class="cls">UserModel</span>&gt; <span class="fn">login</span>({
+  <span class="kw">required</span> <span class="cls">String</span> email,
+  <span class="kw">required</span> <span class="cls">String</span> password,
+}) <span class="kw">async</span> {
+  <span class="kw">try</span> {
+    <span class="cm">// 1. Login ke Firebase Auth</span>
+    <span class="kw">final</span> credential = <span class="kw">await</span> _auth
+        .<span class="fn">signInWithEmailAndPassword</span>(
+          email: email, password: password);
+
+    <span class="cm">// 2. Ambil data profil dari Firestore</span>
+    <span class="kw">final</span> doc = <span class="kw">await</span> _db
+        .<span class="fn">collection</span>(<span class="str">'users'</span>)
+        .<span class="fn">doc</span>(credential.user!.uid)
+        .<span class="fn">get</span>();
+
+    <span class="cm">// 3. Kembalikan UserModel</span>
+    <span class="kw">return</span> <span class="cls">UserModel</span>.<span class="fn">fromFirestore</span>(doc);
+  } <span class="kw">on</span> <span class="cls">FirebaseAuthException</span> <span class="kw">catch</span> (e) {
+    <span class="kw">throw</span> <span class="cls">Exception</span>(<span class="fn">_authErrorMessage</span>(e.code));
+  }
+}</div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <h3><span class="icon">💻</span> Kode Kunci — main.dart (Routing)</h3>
+      <div class="code-section">
+        <div class="code-header">
+          <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+          lib/main.dart
+        </div>
+        <div class="code-body"><span class="kw">return</span> <span class="cls">MaterialApp</span>(
+  title: <span class="str">'RecycleMate'</span>,
+  theme: <span class="cls">ThemeData</span>(
+    <span class="cm">// Warna tema utama hijau</span>
+    colorScheme: <span class="cls">ColorScheme</span>.<span class="fn">fromSeed</span>(
+      seedColor: <span class="kw">const</span> <span class="cls">Color</span>(<span class="num">0xFF2E7D32</span>)),
+    textTheme: <span class="cls">GoogleFonts</span>.<span class="fn">poppinsTextTheme</span>(),
+  ),
+  <span class="cm">// Named Routes — navigasi app</span>
+  routes: {
+    <span class="str">'/'</span>: (_) => <span class="kw">const</span> <span class="cls">SplashScreen</span>(),
+    <span class="str">'/home'</span>: (_) => <span class="kw">const</span> <span class="cls">HomeScreen</span>(),
+    <span class="str">'/login'</span>: (_) => <span class="kw">const</span> <span class="cls">LoginScreen</span>(),
+    <span class="str">'/register'</span>: (_) => <span class="kw">const</span> <span class="cls">RegisterScreen</span>(),
+    <span class="str">'/admin'</span>: (_) => <span class="kw">const</span> <span class="cls">AdminScreen</span>(),
+    <span class="str">'/profile'</span>: (_) => <span class="kw">const</span> <span class="cls">ProfileScreen</span>(),
+  },
+);</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-box" style="margin-top: 16px;">
+    <h3><span class="icon">❓</span> Pertanyaan yang Mungkin Ditanya</h3>
+    <div class="qa-grid">
+      <div class="qa-item">
+        <div class="qa-q"><span class="q-badge">Q</span> Bagaimana cara app tahu user sudah login atau belum?</div>
+        <div class="qa-a"><strong>SplashScreen</strong> cek <code>FirebaseAuth.instance.currentUser</code> — kalau tidak null berarti sudah login, langsung redirect ke <code>/home</code>. Kalau null, redirect ke <code>/login</code>.</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q"><span class="q-badge">Q</span> Apa perbedaan peran buyer, seller, dan admin dalam kode?</div>
+        <div class="qa-a">Field <code>role</code> di Firestore collection <code>users</code>. <strong>UserModel</strong> punya getter <code>isAdmin</code> (role == 'admin') dan <code>isSeller</code> (role == 'seller' atau 'admin'). HomeScreen cek getter ini untuk tampilkan menu yang berbeda.</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q"><span class="q-badge">Q</span> Kenapa ada fungsi _ensureAdminAccount() di main.dart?</div>
+        <div class="qa-a">Supaya akun admin otomatis terbuat saat pertama kali app dijalankan, tanpa perlu setup manual. Fungsi ini cek Firestore collection <code>app_config/setup</code>. Kalau sudah ada flag <code>adminCreated: true</code>, fungsi langsung berhenti — tidak bikin akun ulang.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     ANGGOTA 2: HOME & KATALOG PRODUK
+══════════════════════════════════════════════════ -->
+<div class="member-page">
+  <div class="member-header">
+    <div class="member-num m2">02</div>
+    <div class="member-info">
+      <h2>Anggota 2 — Home &amp; Katalog Produk</h2>
+      <span class="role-badge rb2">Marketplace &amp; Product Catalog</span>
+      <p class="desc">Bertanggung jawab atas tampilan utama marketplace: daftar produk, filter kategori, pencarian, favorit, dan halaman detail produk + checkout.</p>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="section-box">
+      <h3><span class="icon">📄</span> File yang Dikuasai</h3>
+      <div class="file-item">
+        <div>
+          <div class="file-name">screens/home_screen.dart</div>
+          <div class="file-desc">Halaman utama: banner, filter kategori, search bar, grid produk, cart badge</div>
+        </div>
+        <div class="file-lines">560 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">screens/product_detail_screen.dart</div>
+          <div class="file-desc">Detail produk: foto, deskripsi, material, harga, tombol pesan & donasi</div>
+        </div>
+        <div class="file-lines">565 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">widgets/product_card.dart</div>
+          <div class="file-desc">Kartu produk reusable: gambar, nama, harga, tombol favorit</div>
+        </div>
+        <div class="file-lines">~80 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">widgets/category_chip.dart</div>
+          <div class="file-desc">Chip filter kategori yang bisa dipilih (Plastik, Kayu, Kaca, dll)</div>
+        </div>
+        <div class="file-lines">~40 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">widgets/section_title.dart</div>
+          <div class="file-desc">Judul seksi yang dipakai berulang di home screen</div>
+        </div>
+        <div class="file-lines">~25 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">models/product_model.dart</div>
+          <div class="file-desc">Struktur data Product: id, name, price, material, images, crafterId, dll</div>
+        </div>
+        <div class="file-lines">125 baris</div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <h3><span class="icon">✅</span> Fitur yang Dijelaskan</h3>
+      <ul class="feature-list">
+        <li><span class="check c2">✓</span><div><strong>Banner Dinamis:</strong> Teks banner diambil dari Firestore <code>app_config/site_settings</code> — bisa diubah admin</div></li>
+        <li><span class="check c2">✓</span><div><strong>Filter Kategori:</strong> Chip pilihan (Semua, Plastik, Kayu, Kaca, Kain, Logam) — filter berdasarkan field <code>material</code> produk</div></li>
+        <li><span class="check c2">✓</span><div><strong>Search Bar:</strong> Filter real-time berdasarkan nama &amp; deskripsi produk (client-side karena Firestore tidak support full-text search)</div></li>
+        <li><span class="check c2">✓</span><div><strong>FutureBuilder:</strong> Pakai <code>FutureBuilder</code> untuk load produk dari Firestore secara async, tampilkan loading spinner sambil fetch</div></li>
+        <li><span class="check c2">✓</span><div><strong>Favorit:</strong> State <code>Set&lt;String&gt; _favorites</code> — simpan id produk yang di-like, toggle saat icon hati diklik</div></li>
+        <li><span class="check c2">✓</span><div><strong>Cart Badge:</strong> Counter <code>_cartCount</code> di AppBar, bertambah saat produk ditambahkan</div></li>
+        <li><span class="check c2">✓</span><div><strong>Detail Produk:</strong> Tampilkan gambar gallery, info crafter, harga, dan form pesan/donasi</div></li>
+        <li><span class="check c2">✓</span><div><strong>Order via Firestore:</strong> Saat checkout, buat dokumen baru di collection <code>orders</code></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="content-grid" style="margin-top: 16px;">
+    <div class="section-box">
+      <h3><span class="icon">💻</span> Kode Kunci — Filter Produk</h3>
+      <div class="code-section">
+        <div class="code-header">
+          <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+          lib/screens/home_screen.dart
+        </div>
+        <div class="code-body"><span class="cm">// Fungsi filter: jalankan setelah data load dari Firestore</span>
+<span class="cls">List</span>&lt;<span class="cls">ProductModel</span>&gt; <span class="fn">_applyFilters</span>(
+    <span class="cls">List</span>&lt;<span class="cls">ProductModel</span>&gt; all) {
+  <span class="kw">var</span> products = all;
+
+  <span class="cm">// Filter berdasarkan kategori material</span>
+  <span class="kw">if</span> (_selectedCategory != <span class="str">'Semua'</span>) {
+    products = products
+        .<span class="fn">where</span>((p) => p.material == _selectedCategory)
+        .<span class="fn">toList</span>();
+  }
+
+  <span class="cm">// Filter berdasarkan kata kunci search</span>
+  <span class="kw">if</span> (_searchQuery.<span class="fn">isNotEmpty</span>) {
+    <span class="kw">final</span> q = _searchQuery.<span class="fn">toLowerCase</span>();
+    products = products
+        .<span class="fn">where</span>((p) =>
+            p.name.<span class="fn">toLowerCase</span>().<span class="fn">contains</span>(q) ||
+            p.description.<span class="fn">toLowerCase</span>().<span class="fn">contains</span>(q))
+        .<span class="fn">toList</span>();
+  }
+
+  <span class="kw">return</span> products;
+}</div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <h3><span class="icon">💻</span> Kode Kunci — FutureBuilder Load Data</h3>
+      <div class="code-section">
+        <div class="code-header">
+          <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+          lib/screens/home_screen.dart
+        </div>
+        <div class="code-body"><span class="cm">// FutureBuilder — load produk dari Firestore</span>
+<span class="cls">FutureBuilder</span>&lt;<span class="cls">List</span>&lt;<span class="cls">ProductModel</span>&gt;&gt;(
+  future: <span class="cls">FirestoreService</span>.<span class="fn">getProducts</span>(),
+  builder: (context, snapshot) {
+    <span class="kw">if</span> (snapshot.<span class="fn">connectionState</span> ==
+        <span class="cls">ConnectionState</span>.waiting) {
+      <span class="kw">return</span> <span class="kw">const</span> <span class="cls">CircularProgressIndicator</span>();
+    }
+    <span class="kw">if</span> (snapshot.<span class="fn">hasError</span>) {
+      <span class="kw">return</span> <span class="cls">Text</span>(<span class="str">'Error: </span>${snapshot.error}<span class="str">'</span>);
+    }
+
+    <span class="kw">final</span> products = <span class="fn">_applyFilters</span>(
+        snapshot.data ?? []);
+    <span class="kw">return</span> <span class="fn">_buildProductGrid</span>(products);
+  },
+)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-box" style="margin-top: 16px;">
+    <h3><span class="icon">❓</span> Pertanyaan yang Mungkin Ditanya</h3>
+    <div class="qa-grid">
+      <div class="qa-item">
+        <div class="qa-q"><span class="q-badge">Q</span> Kenapa filter search dilakukan di client bukan di Firestore?</div>
+        <div class="qa-a">Firestore tidak mendukung <strong>full-text search</strong> secara native. Solusinya: semua produk diload dulu dari Firestore, kemudian disaring di sisi Flutter menggunakan method <code>String.contains()</code>. Untuk skala besar bisa pakai Algolia atau Typesense, tapi untuk prototype ini cukup.</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q"><span class="q-badge">Q</span> Apa itu FutureBuilder dan kenapa dipakai?</div>
+        <div class="qa-a"><strong>FutureBuilder</strong> adalah widget Flutter untuk menampilkan UI berbeda berdasarkan state dari sebuah Future (async). Saat loading → tampilkan spinner. Saat error → tampilkan pesan error. Saat data ada → tampilkan grid produk. Ini cara idiomatis Flutter untuk handle async data.</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q"><span class="q-badge">Q</span> Bagaimana cara navigasi ke halaman detail produk?</div>
+        <div class="qa-a">Pakai <code>Navigator.pushNamed(context, '/detail', arguments: product.toMap())</code>. Di <code>main.dart</code>, route <code>/detail</code> didaftarkan di <code>onGenerateRoute</code> karena butuh argumen dinamis (data produk), berbeda dengan route statis lainnya.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     ANGGOTA 3: TOKO & UPLOAD PRODUK
+══════════════════════════════════════════════════ -->
+<div class="member-page">
+  <div class="member-header">
+    <div class="member-num m3">03</div>
+    <div class="member-info">
+      <h2>Anggota 3 — Toko &amp; Upload Produk</h2>
+      <span class="role-badge rb3">Seller Features &amp; Storage</span>
+      <p class="desc">Bertanggung jawab atas fitur seller: membuka toko, mengelola toko, upload produk dengan foto, dan manajemen produk milik sendiri.</p>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="section-box">
+      <h3><span class="icon">📄</span> File yang Dikuasai</h3>
+      <div class="file-item">
+        <div>
+          <div class="file-name">screens/open_store_screen.dart</div>
+          <div class="file-desc">Form buka toko baru: nama toko, deskripsi, kategori, upload banner toko</div>
+        </div>
+        <div class="file-lines">616 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">screens/edit_store_screen.dart</div>
+          <div class="file-desc">Edit info toko yang sudah ada: update nama, deskripsi, foto banner</div>
+        </div>
+        <div class="file-lines">339 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">screens/manage_products_screen.dart</div>
+          <div class="file-desc">Daftar produk milik seller: hapus, nonaktifkan, navigasi ke upload</div>
+        </div>
+        <div class="file-lines">623 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">screens/upload_screen.dart</div>
+          <div class="file-desc">Form upload produk baru: nama, harga, material, deskripsi, foto produk</div>
+        </div>
+        <div class="file-lines">423 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">services/storage_service.dart</div>
+          <div class="file-desc">Upload file foto ke Firebase Storage, kembalikan URL download</div>
+        </div>
+        <div class="file-lines">55 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">models/store_model.dart</div>
+          <div class="file-desc">Struktur data Store: id, name, description, ownerId, bannerUrl, rating</div>
+        </div>
+        <div class="file-lines">100 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">widgets/app_image.dart</div>
+          <div class="file-desc">Widget gambar dengan fallback otomatis jika URL gagal load</div>
+        </div>
+        <div class="file-lines">~50 baris</div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <h3><span class="icon">✅</span> Fitur yang Dijelaskan</h3>
+      <ul class="feature-list">
+        <li><span class="check c3">✓</span><div><strong>Buka Toko:</strong> User dengan role buyer bisa upgrade jadi seller dengan buka toko — field <code>role</code> diupdate ke 'seller' di Firestore</div></li>
+        <li><span class="check c3">✓</span><div><strong>Upload Foto:</strong> Pakai <code>image_picker</code> untuk pilih foto dari galeri, lalu upload ke <strong>Firebase Storage</strong> melalui <code>StorageService.uploadFile()</code></div></li>
+        <li><span class="check c3">✓</span><div><strong>Create Product:</strong> Data produk + URL foto disimpan ke Firestore collection <code>products</code> melalui <code>FirestoreService.createProduct()</code></div></li>
+        <li><span class="check c3">✓</span><div><strong>My Products:</strong> Query produk dengan filter <code>crafterId == uid</code> supaya hanya tampil produk milik seller yang login</div></li>
+        <li><span class="check c3">✓</span><div><strong>Hapus/Nonaktifkan:</strong> Soft delete — field <code>isActive: false</code> diupdate, produk tidak tampil di marketplace tapi data tidak terhapus</div></li>
+        <li><span class="check c3">✓</span><div><strong>Edit Toko:</strong> Update dokumen toko di Firestore collection <code>stores</code>, termasuk ganti foto banner</div></li>
+        <li><span class="check c3">✓</span><div><strong>Form Validation:</strong> Semua form pakai <code>GlobalKey&lt;FormState&gt;</code> dengan validator per field</div></li>
+        <li><span class="check c3">✓</span><div><strong>Loading State:</strong> Boolean <code>_isLoading</code> untuk disable tombol dan tampilkan spinner saat proses upload</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="content-grid" style="margin-top: 16px;">
+    <div class="section-box">
+      <h3><span class="icon">💻</span> Kode Kunci — Upload Foto ke Firebase Storage</h3>
+      <div class="code-section">
+        <div class="code-header">
+          <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+          lib/services/storage_service.dart
+        </div>
+        <div class="code-body"><span class="kw">class</span> <span class="cls">StorageService</span> {
+  <span class="kw">static final</span> _storage = <span class="cls">FirebaseStorage</span>.<span class="fn">instance</span>;
+
+  <span class="cm">// Upload file, kembalikan URL publik</span>
+  <span class="kw">static</span> <span class="cls">Future</span>&lt;<span class="cls">String</span>&gt; <span class="fn">uploadFile</span>(
+    <span class="cls">File</span> file, {
+    <span class="cls">String</span> folder = <span class="str">'products'</span>,
+  }) <span class="kw">async</span> {
+    <span class="cm">// Buat path unik pakai timestamp</span>
+    <span class="kw">final</span> path = <span class="str">'</span>$folder<span class="str">/</span>${<span class="cls">DateTime</span>.now().<span class="fn">millisecondsSinceEpoch</span>}<span class="str">'</span>;
+
+    <span class="kw">final</span> ref = _storage.<span class="fn">ref</span>(path);
+    <span class="kw">await</span> ref.<span class="fn">putFile</span>(file);
+
+    <span class="cm">// Dapatkan URL download yang bisa diakses publik</span>
+    <span class="kw">return</span> <span class="kw">await</span> ref.<span class="fn">getDownloadURL</span>();
+  }
+}</div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <h3><span class="icon">💻</span> Kode Kunci — Create Product</h3>
+      <div class="code-section">
+        <div class="code-header">
+          <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+          lib/services/api_service.dart (createProduct)
+        </div>
+        <div class="code-body"><span class="kw">static</span> <span class="cls">Future</span>&lt;<span class="cls">ProductModel</span>&gt; <span class="fn">createProduct</span>(
+    <span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="kw">dynamic</span>&gt; data) <span class="kw">async</span> {
+
+  <span class="kw">final</span> user = _auth.currentUser;
+  <span class="kw">if</span> (user == <span class="kw">null</span>) <span class="kw">throw</span> <span class="cls">Exception</span>(<span class="str">'Belum login.'</span>);
+
+  <span class="cm">// Ambil profil user untuk info crafter</span>
+  <span class="kw">final</span> userDoc = <span class="kw">await</span> _db
+      .<span class="fn">collection</span>(<span class="str">'users'</span>)
+      .<span class="fn">doc</span>(user.uid)
+      .<span class="fn">get</span>();
+
+  <span class="kw">final</span> docData = {
+    ...data,
+    <span class="str">'crafterId'</span>: user.uid,
+    <span class="str">'crafterName'</span>: userDoc[<span class="str">'name'</span>],
+    <span class="str">'isActive'</span>: <span class="kw">true</span>,
+    <span class="str">'createdAt'</span>: <span class="cls">FieldValue</span>.<span class="fn">serverTimestamp</span>(),
+  };
+
+  <span class="cm">// Simpan ke Firestore</span>
+  <span class="kw">final</span> docRef = <span class="kw">await</span> _db
+      .<span class="fn">collection</span>(<span class="str">'products'</span>)
+      .<span class="fn">add</span>(docData);
+
+  <span class="kw">return</span> <span class="cls">ProductModel</span>.<span class="fn">fromFirestore</span>(
+      <span class="kw">await</span> docRef.<span class="fn">get</span>());
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-box" style="margin-top: 16px;">
+    <h3><span class="icon">❓</span> Pertanyaan yang Mungkin Ditanya</h3>
+    <div class="qa-grid">
+      <div class="qa-item">
+        <div class="qa-q"><span class="q-badge">Q</span> Bagaimana cara foto produk disimpan? Langsung ke Firestore?</div>
+        <div class="qa-a">Tidak. Foto tidak disimpan langsung di Firestore karena Firestore hanya menyimpan teks/angka. Foto diupload ke <strong>Firebase Storage</strong> menggunakan <code>StorageService.uploadFile()</code>, kemudian URL hasil upload (string) yang disimpan di Firestore field <code>imageUrl</code>.</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q"><span class="q-badge">Q</span> Apa itu soft delete dan kenapa dipakai?</div>
+        <div class="qa-a">Soft delete artinya produk tidak benar-benar dihapus dari database. Hanya field <code>isActive</code> yang diubah menjadi <code>false</code>. Keuntungannya: data pesanan lama yang mereferensi produk tersebut tidak rusak (referential integrity), dan admin bisa melihat riwayat produk yang sudah dinonaktifkan.</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q"><span class="q-badge">Q</span> Bagaimana proses dari buyer menjadi seller?</div>
+        <div class="qa-a">Buyer pergi ke halaman <code>OpenStoreScreen</code>, isi form toko, lalu submit. Di backend, <code>FirestoreService.createStore()</code> membuat dokumen baru di collection <code>stores</code> DAN mengupdate field <code>role</code> user di collection <code>users</code> dari 'buyer' menjadi 'seller'. HomeScreen kemudian menampilkan menu toko yang sebelumnya tersembunyi.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     ANGGOTA 4: ADMIN & PROFIL
+══════════════════════════════════════════════════ -->
+<div class="member-page">
+  <div class="member-header">
+    <div class="member-num m4">04</div>
+    <div class="member-info">
+      <h2>Anggota 4 — Admin Panel &amp; Profil User</h2>
+      <span class="role-badge rb4">Admin Dashboard &amp; User Profile</span>
+      <p class="desc">Bertanggung jawab atas panel administrasi lengkap dan halaman profil user: kelola semua data, pesanan, donasi, statistik, dan pengaturan akun pribadi.</p>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="section-box">
+      <h3><span class="icon">📄</span> File yang Dikuasai</h3>
+      <div class="file-item">
+        <div>
+          <div class="file-name">screens/admin_screen.dart</div>
+          <div class="file-desc">Panel admin lengkap: statistik, kelola user/produk/pesanan/toko/donasi, site settings</div>
+        </div>
+        <div class="file-lines">970 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">screens/profile_screen.dart</div>
+          <div class="file-desc">Profil user: edit info, ganti avatar, riwayat pesanan, riwayat donasi, logout</div>
+        </div>
+        <div class="file-lines">940 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">services/api_service.dart</div>
+          <div class="file-desc">Semua operasi Firestore: CRUD produk, pesanan, donasi, toko, user, statistik</div>
+        </div>
+        <div class="file-lines">567 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">models/order_model.dart</div>
+          <div class="file-desc">Struktur data Order: id, productId, buyerId, quantity, total, status</div>
+        </div>
+        <div class="file-lines">98 baris</div>
+      </div>
+      <div class="file-item">
+        <div>
+          <div class="file-name">models/donation_model.dart</div>
+          <div class="file-desc">Struktur data Donation: id, productId, donorId, message, status</div>
+        </div>
+        <div class="file-lines">70 baris</div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <h3><span class="icon">✅</span> Fitur yang Dijelaskan</h3>
+      <ul class="feature-list">
+        <li><span class="check c4">✓</span><div><strong>Dashboard Statistik:</strong> Admin lihat total user, produk aktif, total pesanan, total donasi — diambil dari Firestore secara paralel</div></li>
+        <li><span class="check c4">✓</span><div><strong>Kelola User:</strong> Admin bisa lihat semua user, ubah role (buyer↔seller), hapus akun user</div></li>
+        <li><span class="check c4">✓</span><div><strong>Kelola Produk:</strong> Admin bisa approve, suspend, atau hapus produk dari semua seller</div></li>
+        <li><span class="check c4">✓</span><div><strong>Kelola Pesanan:</strong> Lihat semua pesanan, update status (pending→processing→shipped→delivered)</div></li>
+        <li><span class="check c4">✓</span><div><strong>Kelola Donasi:</strong> Monitor donasi yang masuk, update status penerimaan</div></li>
+        <li><span class="check c4">✓</span><div><strong>Site Settings:</strong> Edit teks banner homepage, promo text, mode maintenance — disimpan di <code>app_config/site_settings</code></div></li>
+        <li><span class="check c4">✓</span><div><strong>Edit Profil:</strong> User update nama, kota, nomor HP, bio, dan ganti foto avatar (upload ke Firebase Storage)</div></li>
+        <li><span class="check c4">✓</span><div><strong>Riwayat Pesanan:</strong> Profil tampilkan semua pesanan user dari Firestore dengan filter <code>buyerId == uid</code></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="content-grid" style="margin-top: 16px;">
+    <div class="section-box">
+      <h3><span class="icon">💻</span> Kode Kunci — Admin Stats (Paralel Query)</h3>
+      <div class="code-section">
+        <div class="code-header">
+          <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+          lib/services/api_service.dart
+        </div>
+        <div class="code-body"><span class="cm">// Ambil semua statistik sekaligus — paralel!</span>
+<span class="kw">static</span> <span class="cls">Future</span>&lt;<span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="kw">int</span>&gt;&gt; <span class="fn">getAdminStats</span>() <span class="kw">async</span> {
+  <span class="cm">// Future.wait → jalankan semua query bersamaan</span>
+  <span class="kw">final</span> results = <span class="kw">await</span> <span class="cls">Future</span>.<span class="fn">wait</span>([
+    _db.<span class="fn">collection</span>(<span class="str">'users'</span>).<span class="fn">count</span>().<span class="fn">get</span>(),
+    _db.<span class="fn">collection</span>(<span class="str">'products'</span>)
+       .<span class="fn">where</span>(<span class="str">'isActive'</span>, isEqualTo: <span class="kw">true</span>)
+       .<span class="fn">count</span>().<span class="fn">get</span>(),
+    _db.<span class="fn">collection</span>(<span class="str">'orders'</span>).<span class="fn">count</span>().<span class="fn">get</span>(),
+    _db.<span class="fn">collection</span>(<span class="str">'donations'</span>).<span class="fn">count</span>().<span class="fn">get</span>(),
+  ]);
+
+  <span class="kw">return</span> {
+    <span class="str">'users'</span>: results[<span class="num">0</span>].count ?? <span class="num">0</span>,
+    <span class="str">'products'</span>: results[<span class="num">1</span>].count ?? <span class="num">0</span>,
+    <span class="str">'orders'</span>: results[<span class="num">2</span>].count ?? <span class="num">0</span>,
+    <span class="str">'donations'</span>: results[<span class="num">3</span>].count ?? <span class="num">0</span>,
+  };
+}</div>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <h3><span class="icon">💻</span> Kode Kunci — Update Status Pesanan</h3>
+      <div class="code-section">
+        <div class="code-header">
+          <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+          lib/services/api_service.dart
+        </div>
+        <div class="code-body"><span class="cm">// Status flow: pending → processing → shipped → delivered</span>
+<span class="kw">static</span> <span class="cls">Future</span>&lt;<span class="kw">void</span>&gt; <span class="fn">updateOrderStatus</span>(
+    <span class="cls">String</span> orderId,
+    <span class="cls">String</span> status) <span class="kw">async</span> {
+  <span class="kw">await</span> _db
+      .<span class="fn">collection</span>(<span class="str">'orders'</span>)
+      .<span class="fn">doc</span>(orderId)
+      .<span class="fn">update</span>({
+        <span class="str">'status'</span>: status,
+        <span class="str">'updatedAt'</span>: <span class="cls">FieldValue</span>.<span class="fn">serverTimestamp</span>(),
+      });
+
+  <span class="cm">// Kirim notif email ke buyer jika dikonfigurasi</span>
+  <span class="kw">if</span> (status == <span class="str">'shipped'</span>) {
+    <span class="fn">_notifyBuyerShipped</span>(orderId); <span class="cm">// non-blocking</span>
+  }
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-box" style="margin-top: 16px;">
+    <h3><span class="icon">❓</span> Pertanyaan yang Mungkin Ditanya</h3>
+    <div class="qa-grid">
+      <div class="qa-item">
+        <div class="qa-q"><span class="q-badge">Q</span> Bagaimana keamanan admin? Apa sembarang user bisa akses /admin?</div>
+        <div class="qa-a">AdminScreen cek <code>UserModel.isAdmin</code> di <code>initState()</code>. Kalau bukan admin, langsung redirect ke home. Di HomeScreen juga, tombol admin hanya muncul kalau <code>_isAdmin == true</code>. Role admin disimpan di Firestore dan tidak bisa diubah user sendiri.</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q"><span class="q-badge">Q</span> Apa itu Future.wait dan kenapa lebih baik dari await berurutan?</div>
+        <div class="qa-a"><code>Future.wait([...])</code> menjalankan semua query <strong>secara paralel</strong>. Kalau 4 query masing-masing butuh 200ms, dengan await berurutan total = 800ms. Dengan <code>Future.wait</code>, total hanya ~200ms karena semua berjalan bersamaan. Ini teknik optimasi penting untuk dashboard statistik.</div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q"><span class="q-badge">Q</span> Bagaimana cara admin bisa ubah konten banner homepage?</div>
+        <div class="qa-a">Admin punya tab "Site Settings" di AdminScreen. Saat submit, data diupdate ke Firestore di <code>app_config/site_settings</code>. HomeScreen membaca dokumen yang sama menggunakan <code>FutureBuilder</code> setiap kali dibuka — jadi perubahan langsung terlihat tanpa update app.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SUMMARY PAGE
+══════════════════════════════════════════════════ -->
+<div class="summary-page">
+  <div class="page-header">
+    <h2>📊 Ringkasan Pembagian Tugas</h2>
+    <p>Referensi cepat — cetak dan bawa saat presentasi</p>
+  </div>
+
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>Anggota</th>
+        <th>Peran</th>
+        <th>File Utama</th>
+        <th>Fitur Kunci</th>
+        <th>Kata Kunci Teknis</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Anggota 1</strong><br><span class="tag tag-blue">Arsitektur</span></td>
+        <td>Auth &amp; Setup</td>
+        <td>
+          <code>main.dart</code><br>
+          <code>auth_service.dart</code><br>
+          <code>login_screen.dart</code><br>
+          <code>register_screen.dart</code><br>
+          <code>splash_screen.dart</code>
+        </td>
+        <td>Login, Register, Reset password, Role system, Auto admin setup, Named routes</td>
+        <td>Firebase Auth, Firestore users, createUserWithEmailAndPassword, signInWithEmailAndPassword, Named Routes, MaterialApp</td>
+      </tr>
+      <tr>
+        <td><strong>Anggota 2</strong><br><span class="tag tag-green">Katalog</span></td>
+        <td>Home &amp; Produk</td>
+        <td>
+          <code>home_screen.dart</code><br>
+          <code>product_detail_screen.dart</code><br>
+          <code>product_card.dart</code><br>
+          <code>category_chip.dart</code><br>
+          <code>product_model.dart</code>
+        </td>
+        <td>Filter kategori, Search produk, Favorit, Cart badge, Detail produk, Checkout/Order</td>
+        <td>FutureBuilder, setState, Set&lt;String&gt; favorites, String.contains, client-side filtering, orders collection</td>
+      </tr>
+      <tr>
+        <td><strong>Anggota 3</strong><br><span class="tag tag-orange">Seller</span></td>
+        <td>Toko &amp; Upload</td>
+        <td>
+          <code>open_store_screen.dart</code><br>
+          <code>upload_screen.dart</code><br>
+          <code>manage_products_screen.dart</code><br>
+          <code>storage_service.dart</code><br>
+          <code>store_model.dart</code>
+        </td>
+        <td>Buka toko, Upload foto produk, Kelola produk sendiri, Hapus/nonaktifkan produk</td>
+        <td>Firebase Storage, image_picker, putFile, getDownloadURL, isActive soft delete, crafterId filter</td>
+      </tr>
+      <tr>
+        <td><strong>Anggota 4</strong><br><span class="tag tag-purple">Admin</span></td>
+        <td>Admin &amp; Profil</td>
+        <td>
+          <code>admin_screen.dart</code><br>
+          <code>profile_screen.dart</code><br>
+          <code>api_service.dart</code><br>
+          <code>order_model.dart</code><br>
+          <code>donation_model.dart</code>
+        </td>
+        <td>Dashboard statistik, Kelola user/produk/pesanan, Site settings, Edit profil, Riwayat pesanan</td>
+        <td>Future.wait, paralel query, FieldValue.serverTimestamp, role check, app_config collection, count().get()</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 24px;">
+    <div class="tip-box">
+      <h4>💡 Tips Presentasi</h4>
+      <ul>
+        <li>Saat ditanya kode, jelaskan FUNGSI dulu, baru tunjukkan kodenya</li>
+        <li>Jelaskan alur data: <strong>UI → Service → Firebase → UI</strong></li>
+        <li>Kalau lupa kode detail, jelaskan <em>konsepnya</em> (Firebase, async/await, setState)</li>
+        <li>Siapkan demo live jika memungkinkan — lebih berkesan dari slide saja</li>
+        <li>Tiap anggota wajib tahu: <strong>apa itu Flutter widget, StatefulWidget, setState</strong></li>
+      </ul>
+    </div>
+
+    <div style="background: #f3e5f5; border: 1px solid #ce93d8; border-left: 4px solid #7B1FA2; border-radius: 10px; padding: 14px 18px; font-size: 12px;">
+      <h4 style="color: #6A1B9A; font-size: 13px; margin-bottom: 8px;">🔧 Pertanyaan Umum (Semua Harus Tahu)</h4>
+      <ul style="list-style: none;">
+        <li style="padding: 3px 0; display: flex; gap: 8px;"><span>❓</span><div><strong>Apa itu Flutter?</strong> → Framework Google untuk bikin app Android, iOS, Web dari satu kodebase</div></li>
+        <li style="padding: 3px 0; display: flex; gap: 8px;"><span>❓</span><div><strong>Apa itu Firebase?</strong> → Platform Google: Auth (login), Firestore (database), Storage (file)</div></li>
+        <li style="padding: 3px 0; display: flex; gap: 8px;"><span>❓</span><div><strong>Apa itu Firestore?</strong> → Database NoSQL berbasis dokumen (bukan tabel SQL), real-time</div></li>
+        <li style="padding: 3px 0; display: flex; gap: 8px;"><span>❓</span><div><strong>Kenapa pilih Flutter?</strong> → Cross-platform, cepat dikembangkan, UI kaya, cocok untuk prototype</div></li>
+        <li style="padding: 3px 0; display: flex; gap: 8px;"><span>❓</span><div><strong>Apa bedanya StatelessWidget & StatefulWidget?</strong> → Stateless = UI statis tidak berubah; Stateful = punya state yang bisa berubah pakai setState()</div></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
